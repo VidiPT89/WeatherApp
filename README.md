@@ -1,10 +1,10 @@
 # 🌤️ WeatherApp — Web Client
 
-> Next.js client for the [Weather API Aggregator](../WeatherAPI) — makes the backend's cache, provider fallback and multi-provider comparison **visible**, live, in the UI.
+> Next.js client for the [Weather API Aggregator](https://github.com/VidiPT89/WeatherAPI) — makes the backend's cache, provider fallback and multi-provider comparison **visible**, live, in the UI.
 
-**Live demo:** not deployed yet — runs locally against the Weather API (see *How to Run* below).
+**Live demo:** [weather-app-psi-inky-53.vercel.app](https://weather-app-psi-inky-53.vercel.app)
 
-This is one of three clients (Web / [iOS](../WeatherApp-iOS) / [Android](../WeatherApp-Android)) built on top of the same backend, to prove the API serves multiple platforms through one contract. It never talks to Open-Meteo/OpenWeatherMap directly — every request goes through the Weather API.
+This is one of three clients (Web / [iOS](https://github.com/VidiPT89/WeatherApp-iOS) / [Android](https://github.com/VidiPT89/WeatherApp-Android)) built on top of the same backend, to prove the API serves multiple platforms through one contract. It never talks to Open-Meteo/OpenWeatherMap directly — every request goes through the Weather API.
 
 ## 📦 What's Inside
 
@@ -63,7 +63,7 @@ src/
 
 ## 🚀 How to Run
 
-Prerequisites: Node.js 20+, and the [Weather API](../WeatherAPI) running locally on `http://localhost:8080` (see that repo's README — Postgres + `mvn spring-boot:run`).
+Prerequisites: Node.js 20+, and the [Weather API](https://github.com/VidiPT89/WeatherAPI) running locally on `http://localhost:8080` (see that repo's README — Postgres + `mvn spring-boot:run`).
 
 ```bash
 npm install
@@ -85,7 +85,7 @@ Given the project's scope (three separate client apps on top of one backend), te
 ## 📝 Notes
 
 - No PWA/offline support, interactive map, or public share links yet — out of scope for this v1 (see the project spec's backlog).
-- Open-Meteo's geocoding can occasionally resolve an ambiguous city name to the wrong country (e.g. "Lisboa" matching a same-named town instead of Lisbon, Portugal) — this is a known backend/provider limitation, documented in the [WeatherAPI README](../WeatherAPI/README.md#-notes), not a bug in this client.
+- Open-Meteo's geocoding can occasionally resolve an ambiguous city name to the wrong country (e.g. "Lisboa" matching a same-named town instead of Lisbon, Portugal) — this is a known backend/provider limitation, documented in the [WeatherAPI README](https://github.com/VidiPT89/WeatherAPI#-notes), not a bug in this client.
 
 ## 📄 License
 
