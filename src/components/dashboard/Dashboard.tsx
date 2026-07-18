@@ -2,42 +2,56 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
 import { SearchBar } from "@/components/search/SearchBar";
 import { ForecastChart } from "@/components/weather/ForecastChart";
+import { MarineConditionsCard } from "@/components/weather/MarineConditionsCard";
 import { UnitToggle } from "@/components/weather/UnitToggle";
 import { WeatherCard } from "@/components/weather/WeatherCard";
-import { ApiError, fetchForecast, fetchPreferences, fetchWeather } from "@/lib/api";
-import type { ForecastWeatherResponse, Units, WeatherResponse } from "@/types/weather";
+import { translateApiError } from "@/i18n/errorMessage";
+import { useTranslations } from "@/i18n/LocaleProvider";
+import { ApiError, fetchForecast, fetchMarine, fetchPreferences, fetchWeather } from "@/lib/api";
+import type { ForecastWeatherResponse, MarineConditionsResponse, Units, WeatherResponse } from "@/types/weather";
 
 type LoadState = "idle" | "loading" | "error" | "success";
 
 export function Dashboard() {
+  const { dict } = useTranslations();
   const searchParams = useSearchParams();
   const [units, setUnits] = useState<Units>("metric");
   const [city, setCity] = useState<string | null>(null);
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [forecast, setForecast] = useState<ForecastWeatherResponse | null>(null);
+  const [marine, setMarine] = useState<MarineConditionsResponse | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const loadCity = useCallback(async (targetCity: string, targetUnits: Units) => {
-    setState("loading");
-    setErrorMessage(null);
-    try {
-      const [weatherResult, forecastResult] = await Promise.all([
-        fetchWeather(targetCity, targetUnits),
-        fetchForecast(targetCity, targetUnits),
-      ]);
-      setWeather(weatherResult);
-      setForecast(forecastResult);
-      setState("success");
-    } catch (error) {
-      setWeather(null);
-      setForecast(null);
-      setState("error");
-      setErrorMessage(error instanceof ApiError ? error.message : "Não foi possível obter o tempo.");
-    }
-  }, []);
+  const loadCity = useCallback(
+    async (targetCity: string, targetUnits: Units) => {
+      setState("loading");
+      setErrorMessage(null);
+      try {
+        const [weatherResult, forecastResult, marineResult] = await Promise.all([
+          fetchWeather(targetCity, targetUnits),
+          fetchForecast(targetCity, targetUnits),
+          fetchMarine(targetCity, targetUnits).catch(() => null),
+        ]);
+        setWeather(weatherResult);
+        setForecast(forecastResult);
+        setMarine(marineResult);
+        setState("success");
+      } catch (error) {
+        setWeather(null);
+        setForecast(null);
+        setMarine(null);
+        setState("error");
+        setErrorMessage(
+          error instanceof ApiError ? translateApiError(dict, error) : dict.errors.WEATHER_LOAD_FAILED,
+        );
+      }
+    },
+    [dict],
+  );
 
   useEffect(() => {
     let isCancelled = false;
@@ -82,30 +96,54 @@ export function Dashboard() {
         <UnitToggle units={units} onChange={handleUnitsChange} />
       </div>
 
-      {state === "idle" && (
-        <p className="rounded-2xl border border-dashed border-slate-800 p-8 text-center text-slate-400">
-          Pesquisa uma cidade para veres o tempo atual e a previsão.
-        </p>
-      )}
+      <AnimatePresence mode="wait">
+        {state === "idle" && (
+          <motion.p
+            key="idle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="rounded-2xl border border-dashed border-border p-8 text-center text-text-muted"
+          >
+            {dict.dashboard.idlePrompt}
+          </motion.p>
+        )}
 
-      {state === "loading" && (
-        <p className="rounded-2xl border border-slate-800 bg-slate-900/40 p-8 text-center text-slate-400">
-          A carregar…
-        </p>
-      )}
+        {state === "loading" && (
+          <motion.p
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="animate-pulse rounded-2xl border border-border bg-surface-raised p-8 text-center text-text-muted"
+          >
+            {dict.dashboard.loading}
+          </motion.p>
+        )}
 
-      {state === "error" && (
-        <p role="alert" className="rounded-2xl border border-red-500/30 bg-red-500/10 p-8 text-center text-red-300">
-          {errorMessage}
-        </p>
-      )}
+        {state === "error" && (
+          <motion.p
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="alert"
+            className="rounded-2xl border border-danger/30 bg-danger-bg p-8 text-center text-danger"
+          >
+            {errorMessage}
+          </motion.p>
+        )}
 
-      {state === "success" && weather && forecast && (
-        <div className="grid gap-6 lg:grid-cols-2">
-          <WeatherCard weather={weather} />
-          <ForecastChart hourly={forecast.hourly} daily={forecast.daily} units={units} />
-        </div>
-      )}
+        {state === "success" && weather && forecast && (
+          <motion.div key="success" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col gap-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <WeatherCard weather={weather} today={forecast.daily[0]} />
+              <ForecastChart hourly={forecast.hourly} daily={forecast.daily} units={units} />
+            </div>
+            {marine && <MarineConditionsCard marine={marine} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -34,6 +34,7 @@ export interface HourlyForecastEntry {
   time: string;
   temperature: number;
   description: string;
+  precipitationProbability: number;
 }
 
 export interface DailyForecastEntry {
@@ -41,6 +42,10 @@ export interface DailyForecastEntry {
   temperatureMax: number;
   temperatureMin: number;
   description: string;
+  sunrise: string;
+  sunset: string;
+  uvIndexMax: number;
+  precipitationProbabilityMax: number;
 }
 
 export interface ForecastWeatherResponse {
@@ -51,6 +56,18 @@ export interface ForecastWeatherResponse {
   fromCache: boolean;
   hourly: HourlyForecastEntry[];
   daily: DailyForecastEntry[];
+}
+
+export interface MarineConditionsResponse {
+  city: string;
+  country: string;
+  units: Units;
+  provider: string;
+  fromCache: boolean;
+  waterTemperature: number | null;
+  waveHeightMeters: number | null;
+  waveDirectionDegrees: number | null;
+  wavePeriodSeconds: number | null;
 }
 
 export interface ProviderComparisonEntry {
@@ -98,6 +115,7 @@ export interface GeocodingSearchResponse {
 
 export interface ApiErrorBody {
   message: string;
+  errorCode?: string;
 }
 
 export const PRIMARY_PROVIDER = "open-meteo";

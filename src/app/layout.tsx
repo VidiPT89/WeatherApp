@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
+import { LocaleProvider } from "@/i18n/LocaleProvider";
+import { parseLocale } from "@/i18n/locale";
+import { LOCALE_COOKIE_NAME, THEME_COOKIE_NAME } from "@/lib/constants";
+import { ThemeProvider } from "@/theme/ThemeProvider";
+import { parseTheme } from "@/theme/theme";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,14 +23,25 @@ export const metadata: Metadata = {
   description: "Cliente da Weather API Agregadora — cache, fallback e comparação de providers ao vivo.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale = parseLocale(cookieStore.get(LOCALE_COOKIE_NAME)?.value);
+  const theme = parseTheme(cookieStore.get(THEME_COOKIE_NAME)?.value);
+
   return (
-    <html lang="pt" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100">{children}</body>
+    <html
+      lang={locale}
+      className={`${geistSans.variable} ${geistMono.variable} ${theme === "dark" ? "dark" : ""} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col bg-surface text-text">
+        <ThemeProvider initialTheme={theme}>
+          <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

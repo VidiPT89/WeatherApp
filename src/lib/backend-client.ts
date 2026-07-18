@@ -5,11 +5,13 @@ const BASE_URL = process.env.WEATHER_API_URL ?? "http://localhost:8080";
 
 export class BackendApiError extends Error {
   status: number;
+  errorCode?: string;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, errorCode?: string) {
     super(message);
     this.name = "BackendApiError";
     this.status = status;
+    this.errorCode = errorCode;
   }
 }
 
@@ -37,7 +39,8 @@ export async function backendFetch<T>(path: string, options: RequestOptions = {}
   });
 
   if (!response.ok) {
-    throw new BackendApiError(response.status, await extractErrorMessage(response));
+    const body = await extractErrorBody(response);
+    throw new BackendApiError(response.status, body.message, body.errorCode);
   }
 
   if (response.status === 204) {
@@ -47,11 +50,11 @@ export async function backendFetch<T>(path: string, options: RequestOptions = {}
   return (await response.json()) as T;
 }
 
-async function extractErrorMessage(response: Response): Promise<string> {
+async function extractErrorBody(response: Response): Promise<ApiErrorBody> {
   try {
     const body = (await response.json()) as ApiErrorBody;
-    return body.message ?? response.statusText;
+    return { message: body.message ?? response.statusText, errorCode: body.errorCode };
   } catch {
-    return response.statusText;
+    return { message: response.statusText };
   }
 }

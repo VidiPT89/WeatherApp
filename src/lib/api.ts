@@ -3,6 +3,7 @@ import type {
   FavoriteResponse,
   ForecastWeatherResponse,
   GeocodingSearchResponse,
+  MarineConditionsResponse,
   SearchHistoryResponse,
   Units,
   UserPreferences,
@@ -11,22 +12,27 @@ import type {
 
 export class ApiError extends Error {
   status: number;
+  errorCode?: string;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, errorCode?: string) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.errorCode = errorCode;
   }
 }
 
-async function readErrorMessage(response: Response): Promise<string> {
+async function readErrorBody(response: Response): Promise<{ message: string; errorCode?: string }> {
   const body = await response.json().catch(() => null);
-  return body?.message ?? response.statusText;
+  return { message: body?.message ?? response.statusText, errorCode: body?.errorCode };
 }
 
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(path, { cache: "no-store" });
-  if (!response.ok) throw new ApiError(response.status, await readErrorMessage(response));
+  if (!response.ok) {
+    const body = await readErrorBody(response);
+    throw new ApiError(response.status, body.message, body.errorCode);
+  }
   return response.json() as Promise<T>;
 }
 
@@ -36,7 +42,10 @@ async function send<T>(path: string, method: string, body: unknown): Promise<T> 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!response.ok) throw new ApiError(response.status, await readErrorMessage(response));
+  if (!response.ok) {
+    const errorBody = await readErrorBody(response);
+    throw new ApiError(response.status, errorBody.message, errorBody.errorCode);
+  }
   return response.json() as Promise<T>;
 }
 
@@ -58,6 +67,10 @@ export function fetchForecast(city: string, units?: Units) {
 
 export function fetchCompare(city: string, units?: Units) {
   return get<CompareResponse>(`/api/weather/compare?${buildQuery({ city, units })}`);
+}
+
+export function fetchMarine(city: string, units?: Units) {
+  return get<MarineConditionsResponse>(`/api/weather/marine?${buildQuery({ city, units })}`);
 }
 
 export function fetchHistory() {
