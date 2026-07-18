@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "motion/react";
+import { useTranslations } from "@/i18n/LocaleProvider";
 import type { Units } from "@/types/weather";
 
 type Props = {
@@ -8,22 +10,33 @@ type Props = {
 };
 
 export function UnitToggle({ units, onChange }: Props) {
+  const { dict } = useTranslations();
+
   return (
-    <div className="flex gap-1 rounded-lg bg-slate-800/60 p-1 text-sm" role="group" aria-label="Unidades de temperatura">
-      <button
-        type="button"
-        onClick={() => onChange("metric")}
-        className={`rounded-md px-3 py-1 transition ${units === "metric" ? "bg-sky-400 text-slate-950" : "text-slate-300"}`}
-      >
-        °C
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange("imperial")}
-        className={`rounded-md px-3 py-1 transition ${units === "imperial" ? "bg-sky-400 text-slate-950" : "text-slate-300"}`}
-      >
-        °F
-      </button>
+    <div
+      className="flex gap-1 rounded-lg bg-surface-muted p-1 text-sm"
+      role="group"
+      aria-label={dict.unitToggle.ariaLabel}
+    >
+      {(["metric", "imperial"] as const).map((option) => (
+        <button
+          key={option}
+          type="button"
+          onClick={() => onChange(option)}
+          className={`relative rounded-md px-3 py-1 transition-colors ${
+            units === option ? "text-accent-foreground" : "text-text-muted"
+          }`}
+        >
+          {units === option && (
+            <motion.span
+              layoutId="unit-toggle-pill"
+              className="absolute inset-0 -z-10 rounded-md bg-accent"
+              transition={{ type: "spring", stiffness: 380, damping: 32 }}
+            />
+          )}
+          {option === "metric" ? "°C" : "°F"}
+        </button>
+      ))}
     </div>
   );
 }

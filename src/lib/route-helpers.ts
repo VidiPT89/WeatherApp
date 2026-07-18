@@ -4,10 +4,10 @@ import { getToken } from "@/lib/session";
 
 export function errorResponse(error: unknown): NextResponse {
   if (error instanceof BackendApiError) {
-    return NextResponse.json({ message: error.message }, { status: error.status });
+    return NextResponse.json({ message: error.message, errorCode: error.errorCode }, { status: error.status });
   }
   console.error(error);
-  return NextResponse.json({ message: "Unexpected error" }, { status: 500 });
+  return NextResponse.json({ message: "Unexpected error", errorCode: "INTERNAL_ERROR" }, { status: 500 });
 }
 
 export async function withAuth(
