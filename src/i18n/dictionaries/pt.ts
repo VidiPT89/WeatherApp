@@ -1,6 +1,44 @@
 import type { Dictionary } from "./types";
 
 const pt: Dictionary = {
+  landing: {
+    badge: "Dados ao vivo · Open-Meteo & OpenWeatherMap",
+    heroTitle: "O tempo, sem",
+    heroTitleHighlight: "surpresas.",
+    heroSubtitle:
+      "Previsão de 16 dias, condições marítimas e comparação em tempo real entre fornecedores — tudo numa app rápida, em português ou inglês, no tema que preferires.",
+    ctaPrimary: "Criar conta grátis",
+    ctaSecondary: "Já tenho conta",
+    statForecastValue: "16 dias",
+    statForecastLabel: "de previsão diária",
+    statProvidersValue: "2",
+    statProvidersLabel: "fornecedores com fallback automático",
+    statLanguagesValue: "PT · EN",
+    statLanguagesLabel: "e tema claro ou escuro",
+    featuresEyebrow: "Porquê esta app",
+    featuresTitle: "Tudo o que precisas de saber sobre o tempo, num só lugar",
+    featureForecastTitle: "Previsão alargada",
+    featureForecastBody:
+      "48 horas hora a hora e 16 dias diários, com índice UV, probabilidade de chuva, nascer e pôr do sol.",
+    featureMarineTitle: "Condições marítimas",
+    featureMarineBody:
+      "Temperatura da água, altura, direção e período das ondas para cidades costeiras — sem inventar dados onde não existem.",
+    featureCompareTitle: "Fallback entre fornecedores",
+    featureCompareBody:
+      "Se o fornecedor principal falhar, a app muda automaticamente para uma alternativa — e mostra-te qual está a usar.",
+    featureFavoritesTitle: "Favoritos e histórico",
+    featureFavoritesBody: "Guarda as tuas cidades preferidas e revê as pesquisas mais recentes num instante.",
+    featureI18nTitle: "Português, inglês, claro ou escuro",
+    featureI18nBody: "Muda de idioma e de tema a qualquer momento — a preferência fica guardada para a próxima vez.",
+    featureCacheTitle: "Rápida por natureza",
+    featureCacheBody: "Cache inteligente e circuit breakers mantêm a app responsiva mesmo quando os fornecedores abrandam.",
+    showcaseEyebrow: "Por dentro da app",
+    showcaseTitle: "Feita para se ver de relance",
+    showcaseSubtitle: "Cartões claros, gráficos animados e tudo o que importa visível sem cliques extra.",
+    ctaSectionTitle: "Pronto para consultar o tempo como deve ser?",
+    ctaSectionSubtitle: "Cria uma conta em segundos — sem cartão de crédito, sem anúncios.",
+    footerTagline: "Um cliente da Weather API, feito com Next.js.",
+  },
   nav: {
     appName: "WeatherApp",
     ariaLabel: "Navegação principal",
