@@ -1,4 +1,38 @@
 export interface Dictionary {
+  landing: {
+    badge: string;
+    heroTitle: string;
+    heroTitleHighlight: string;
+    heroSubtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    statForecastValue: string;
+    statForecastLabel: string;
+    statProvidersValue: string;
+    statProvidersLabel: string;
+    statLanguagesValue: string;
+    statLanguagesLabel: string;
+    featuresEyebrow: string;
+    featuresTitle: string;
+    featureForecastTitle: string;
+    featureForecastBody: string;
+    featureMarineTitle: string;
+    featureMarineBody: string;
+    featureCompareTitle: string;
+    featureCompareBody: string;
+    featureFavoritesTitle: string;
+    featureFavoritesBody: string;
+    featureI18nTitle: string;
+    featureI18nBody: string;
+    featureCacheTitle: string;
+    featureCacheBody: string;
+    showcaseEyebrow: string;
+    showcaseTitle: string;
+    showcaseSubtitle: string;
+    ctaSectionTitle: string;
+    ctaSectionSubtitle: string;
+    footerTagline: string;
+  };
   nav: {
     appName: string;
     ariaLabel: string;

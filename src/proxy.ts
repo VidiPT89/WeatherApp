@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME } from "@/lib/constants";
 
-const PUBLIC_PATHS = ["/login", "/register"];
+const PUBLIC_EXACT_PATHS = ["/"];
+const PUBLIC_PREFIX_PATHS = ["/login", "/register"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/api") || PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+  if (
+    pathname.startsWith("/api") ||
+    PUBLIC_EXACT_PATHS.includes(pathname) ||
+    PUBLIC_PREFIX_PATHS.some((path) => pathname.startsWith(path))
+  ) {
     return NextResponse.next();
   }
 
@@ -19,5 +24,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|screenshots/|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)"],
 };

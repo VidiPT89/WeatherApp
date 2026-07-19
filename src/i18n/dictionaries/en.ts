@@ -1,6 +1,44 @@
 import type { Dictionary } from "./types";
 
 const en: Dictionary = {
+  landing: {
+    badge: "Live data · Open-Meteo & OpenWeatherMap",
+    heroTitle: "Weather, without the",
+    heroTitleHighlight: "surprises.",
+    heroSubtitle:
+      "16-day forecasts, sea conditions, and real-time provider comparison — all in one fast app, in Portuguese or English, in whichever theme you prefer.",
+    ctaPrimary: "Create a free account",
+    ctaSecondary: "I already have an account",
+    statForecastValue: "16 days",
+    statForecastLabel: "of daily forecast",
+    statProvidersValue: "2",
+    statProvidersLabel: "providers with automatic fallback",
+    statLanguagesValue: "PT · EN",
+    statLanguagesLabel: "plus light or dark theme",
+    featuresEyebrow: "Why this app",
+    featuresTitle: "Everything you need to know about the weather, in one place",
+    featureForecastTitle: "Extended forecast",
+    featureForecastBody:
+      "48 hours hour-by-hour and 16 days daily, with UV index, rain probability, sunrise and sunset.",
+    featureMarineTitle: "Sea conditions",
+    featureMarineBody:
+      "Water temperature, wave height, direction, and period for coastal cities — without making up data where none exists.",
+    featureCompareTitle: "Provider fallback",
+    featureCompareBody:
+      "If the primary provider fails, the app automatically switches to a backup — and shows you which one it's using.",
+    featureFavoritesTitle: "Favorites and history",
+    featureFavoritesBody: "Save your favorite cities and revisit recent searches in an instant.",
+    featureI18nTitle: "Portuguese, English, light or dark",
+    featureI18nBody: "Switch language and theme any time — your preference is saved for next time.",
+    featureCacheTitle: "Fast by design",
+    featureCacheBody: "Smart caching and circuit breakers keep the app responsive even when providers slow down.",
+    showcaseEyebrow: "Inside the app",
+    showcaseTitle: "Built to be understood at a glance",
+    showcaseSubtitle: "Clear cards, animated charts, and everything that matters visible without extra clicks.",
+    ctaSectionTitle: "Ready to check the weather properly?",
+    ctaSectionSubtitle: "Create an account in seconds — no credit card, no ads.",
+    footerTagline: "A Weather API client, built with Next.js.",
+  },
   nav: {
     appName: "WeatherApp",
     ariaLabel: "Main navigation",
