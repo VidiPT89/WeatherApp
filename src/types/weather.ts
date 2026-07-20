@@ -14,6 +14,7 @@ export interface AuthResponse {
   token: string;
   tokenType: string;
   expiresInSeconds: number;
+  refreshToken: string;
 }
 
 export interface WeatherResponse {
