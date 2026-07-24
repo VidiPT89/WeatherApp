@@ -83,7 +83,46 @@ export interface Dictionary {
     waveHeight: string;
     waveDirection: string;
     wavePeriod: string;
+    tides: string;
+    tideHigh: string;
+    tideLow: string;
     unavailable: string;
+  };
+  insights: {
+    title: string;
+    subtitle: string;
+    moonPhase: string;
+    uvRisk: string;
+    outdoorActivity: string;
+    fishingConditions: string;
+    moonPhases: {
+      newMoon: string;
+      waxingCrescent: string;
+      firstQuarter: string;
+      waxingGibbous: string;
+      fullMoon: string;
+      waningGibbous: string;
+      lastQuarter: string;
+      waningCrescent: string;
+    };
+    uvRiskLabels: {
+      low: string;
+      moderate: string;
+      high: string;
+      veryHigh: string;
+      extreme: string;
+    };
+    activityLabels: {
+      great: string;
+      good: string;
+      fair: string;
+      poor: string;
+    };
+    fishingLabels: {
+      good: string;
+      fair: string;
+      poor: string;
+    };
   };
   settings: {
     title: string;

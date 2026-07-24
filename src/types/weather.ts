@@ -59,6 +59,11 @@ export interface ForecastWeatherResponse {
   daily: DailyForecastEntry[];
 }
 
+export interface TideEvent {
+  type: "high" | "low";
+  time: string;
+}
+
 export interface MarineConditionsResponse {
   city: string;
   country: string;
@@ -69,6 +74,22 @@ export interface MarineConditionsResponse {
   waveHeightMeters: number | null;
   waveDirectionDegrees: number | null;
   wavePeriodSeconds: number | null;
+  tideEvents: TideEvent[];
+}
+
+export interface MoonPhaseInfo {
+  phase: string;
+  illuminationPercent: number;
+}
+
+export interface WeatherInsightsResponse {
+  city: string;
+  country: string;
+  moonPhase: MoonPhaseInfo;
+  uvRiskLabel: string;
+  outdoorActivityScore: number;
+  outdoorActivityLabel: string;
+  fishingConditionLabel: string | null;
 }
 
 export interface ProviderComparisonEntry {

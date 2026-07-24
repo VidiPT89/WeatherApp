@@ -18,6 +18,11 @@ function formatWaveHeight(value: number | null, units: Units): string | null {
   return units === "imperial" ? `${(value * 3.281).toFixed(1)} ft` : `${value.toFixed(1)} m`;
 }
 
+function formatTideTime(time: string): string {
+  const [, timePart] = time.split("T");
+  return timePart ?? time;
+}
+
 export function MarineConditionsCard({ marine }: Props) {
   const { dict } = useTranslations();
 
@@ -69,6 +74,22 @@ export function MarineConditionsCard({ marine }: Props) {
         </dl>
       ) : (
         <p className="mt-4 text-sm text-text-subtle">{dict.marine.unavailable}</p>
+      )}
+
+      {marine.tideEvents.length > 0 && (
+        <div className="mt-4 border-t border-border pt-4">
+          <p className="text-xs uppercase tracking-wide text-text-muted">{dict.marine.tides}</p>
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-text">
+            {marine.tideEvents.map((event) => (
+              <li key={`${event.type}-${event.time}`}>
+                <span className="font-medium">
+                  {event.type === "high" ? dict.marine.tideHigh : dict.marine.tideLow}
+                </span>{" "}
+                {formatTideTime(event.time)}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </motion.section>
   );
