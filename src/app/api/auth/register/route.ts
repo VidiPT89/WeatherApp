@@ -5,9 +5,9 @@ import { errorResponse } from "@/lib/route-helpers";
 import type { AuthResponse, RegisterRequest } from "@/types/weather";
 
 export async function POST(request: NextRequest) {
-  const body = (await request.json()) as RegisterRequest;
-
   try {
+    const body = (await request.json()) as RegisterRequest;
+
     const auth = await backendFetch<AuthResponse>("/api/v1/auth/register", {
       method: "POST",
       body,

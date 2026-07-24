@@ -1,27 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CompareGrid } from "@/components/compare/CompareGrid";
 import { SearchBar } from "@/components/search/SearchBar";
 import { translateApiError } from "@/i18n/errorMessage";
 import { useTranslations } from "@/i18n/LocaleProvider";
-import { ApiError, fetchCompare } from "@/lib/api";
-import type { CompareResponse } from "@/types/weather";
+import { ApiError, fetchCompare, fetchPreferences } from "@/lib/api";
+import type { CompareResponse, Units } from "@/types/weather";
 
 type LoadState = "idle" | "loading" | "error" | "success";
 
 export function CompareView() {
   const { dict } = useTranslations();
+  const [units, setUnits] = useState<Units>("metric");
   const [result, setResult] = useState<CompareResponse | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+    fetchPreferences()
+      .then((preferences) => {
+        if (!isCancelled) setUnits(preferences.units);
+      })
+      .catch(() => {
+        /* preferences are optional context; the metric default already set stays in place */
+      });
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   async function handleSelectCity(city: string) {
     setState("loading");
     setErrorMessage(null);
     try {
-      const compareResult = await fetchCompare(city);
+      const compareResult = await fetchCompare(city, units);
       setResult(compareResult);
       setState("success");
     } catch (error) {
