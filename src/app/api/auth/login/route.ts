@@ -5,9 +5,9 @@ import { errorResponse } from "@/lib/route-helpers";
 import type { AuthResponse, LoginRequest } from "@/types/weather";
 
 export async function POST(request: NextRequest) {
-  const body = (await request.json()) as LoginRequest;
-
   try {
+    const body = (await request.json()) as LoginRequest;
+
     const auth = await backendFetch<AuthResponse>("/api/v1/auth/login", {
       method: "POST",
       body,
