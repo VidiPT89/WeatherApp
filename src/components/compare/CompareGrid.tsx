@@ -18,12 +18,14 @@ export function CompareGrid({ result }: Props) {
       ? successfulEntries.reduce((sum, entry) => sum + (entry.weather?.temperature ?? 0), 0) /
         successfulEntries.length
       : null;
+  const averageUnits = successfulEntries[0]?.weather?.units ?? "metric";
 
   return (
     <div className="flex flex-col gap-4">
       {averageTemperature !== null && (
         <p className="text-sm text-text-muted">
-          {dict.compare.average} <span className="font-medium text-text">{Math.round(averageTemperature)}°</span>
+          {dict.compare.average}{" "}
+          <span className="font-medium text-text">{formatTemperature(averageTemperature, averageUnits)}</span>
         </p>
       )}
 

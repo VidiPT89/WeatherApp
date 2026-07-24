@@ -28,10 +28,22 @@ async function readErrorBody(response: Response): Promise<{ message: string; err
   return { message: body?.message ?? response.statusText, errorCode: body?.errorCode };
 }
 
+/**
+ * `UNAUTHENTICATED` means the backend has already exhausted the refresh flow (see
+ * `withAuth` in route-helpers.ts) — there's no in-app recovery, so send the user to
+ * `/login` instead of leaving them stuck on an inline error with no way forward.
+ */
+function redirectToLoginOnSessionExpiry(errorCode?: string): void {
+  if (errorCode === "UNAUTHENTICATED" && typeof window !== "undefined") {
+    window.location.assign("/login");
+  }
+}
+
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(path, { cache: "no-store" });
   if (!response.ok) {
     const body = await readErrorBody(response);
+    redirectToLoginOnSessionExpiry(body.errorCode);
     throw new ApiError(response.status, body.message, body.errorCode);
   }
   return response.json() as Promise<T>;
@@ -45,6 +57,7 @@ async function send<T>(path: string, method: string, body: unknown): Promise<T> 
   });
   if (!response.ok) {
     const errorBody = await readErrorBody(response);
+    redirectToLoginOnSessionExpiry(errorBody.errorCode);
     throw new ApiError(response.status, errorBody.message, errorBody.errorCode);
   }
   return response.json() as Promise<T>;

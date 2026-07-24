@@ -32,7 +32,7 @@ describe("CompareGrid", () => {
 
     render(<CompareGrid result={result} />);
 
-    expect(screen.getByText("22°")).toBeInTheDocument();
+    expect(screen.getByText("22°C")).toBeInTheDocument();
   });
 
   it("shows the provider error message when a provider fails", () => {

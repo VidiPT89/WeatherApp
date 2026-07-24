@@ -2,16 +2,12 @@
 
 import { motion } from "motion/react";
 import { useTranslations } from "@/i18n/LocaleProvider";
+import { formatTemperature } from "@/lib/format";
 import type { MarineConditionsResponse, Units } from "@/types/weather";
 
 type Props = {
   marine: MarineConditionsResponse;
 };
-
-function formatWaterTemperature(value: number | null, units: Units): string | null {
-  if (value === null) return null;
-  return `${Math.round(value)}°${units === "imperial" ? "F" : "C"}`;
-}
 
 function formatWaveHeight(value: number | null, units: Units): string | null {
   if (value === null) return null;
@@ -50,7 +46,7 @@ export function MarineConditionsCard({ marine }: Props) {
           <div>
             <dt className="text-text-muted">{dict.marine.waterTemperature}</dt>
             <dd className="text-lg font-semibold">
-              {formatWaterTemperature(marine.waterTemperature, marine.units) ?? "—"}
+              {marine.waterTemperature !== null ? formatTemperature(marine.waterTemperature, marine.units) : "—"}
             </dd>
           </div>
           <div>
