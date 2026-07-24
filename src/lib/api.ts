@@ -7,6 +7,7 @@ import type {
   SearchHistoryResponse,
   Units,
   UserPreferences,
+  WeatherInsightsResponse,
   WeatherResponse,
 } from "@/types/weather";
 
@@ -71,6 +72,10 @@ export function fetchCompare(city: string, units?: Units) {
 
 export function fetchMarine(city: string, units?: Units) {
   return get<MarineConditionsResponse>(`/api/weather/marine?${buildQuery({ city, units })}`);
+}
+
+export function fetchInsights(city: string, units?: Units) {
+  return get<WeatherInsightsResponse>(`/api/weather/insights?${buildQuery({ city, units })}`);
 }
 
 export function fetchHistory() {

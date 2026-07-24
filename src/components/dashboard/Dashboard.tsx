@@ -8,10 +8,17 @@ import { ForecastChart } from "@/components/weather/ForecastChart";
 import { MarineConditionsCard } from "@/components/weather/MarineConditionsCard";
 import { UnitToggle } from "@/components/weather/UnitToggle";
 import { WeatherCard } from "@/components/weather/WeatherCard";
+import { WeatherInsightsCard } from "@/components/weather/WeatherInsightsCard";
 import { translateApiError } from "@/i18n/errorMessage";
 import { useTranslations } from "@/i18n/LocaleProvider";
-import { ApiError, fetchForecast, fetchMarine, fetchPreferences, fetchWeather } from "@/lib/api";
-import type { ForecastWeatherResponse, MarineConditionsResponse, Units, WeatherResponse } from "@/types/weather";
+import { ApiError, fetchForecast, fetchInsights, fetchMarine, fetchPreferences, fetchWeather } from "@/lib/api";
+import type {
+  ForecastWeatherResponse,
+  MarineConditionsResponse,
+  Units,
+  WeatherInsightsResponse,
+  WeatherResponse,
+} from "@/types/weather";
 
 type LoadState = "idle" | "loading" | "error" | "success";
 
@@ -23,6 +30,7 @@ export function Dashboard() {
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [forecast, setForecast] = useState<ForecastWeatherResponse | null>(null);
   const [marine, setMarine] = useState<MarineConditionsResponse | null>(null);
+  const [insights, setInsights] = useState<WeatherInsightsResponse | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -31,19 +39,22 @@ export function Dashboard() {
       setState("loading");
       setErrorMessage(null);
       try {
-        const [weatherResult, forecastResult, marineResult] = await Promise.all([
+        const [weatherResult, forecastResult, marineResult, insightsResult] = await Promise.all([
           fetchWeather(targetCity, targetUnits),
           fetchForecast(targetCity, targetUnits),
           fetchMarine(targetCity, targetUnits).catch(() => null),
+          fetchInsights(targetCity, targetUnits).catch(() => null),
         ]);
         setWeather(weatherResult);
         setForecast(forecastResult);
         setMarine(marineResult);
+        setInsights(insightsResult);
         setState("success");
       } catch (error) {
         setWeather(null);
         setForecast(null);
         setMarine(null);
+        setInsights(null);
         setState("error");
         setErrorMessage(
           error instanceof ApiError ? translateApiError(dict, error) : dict.errors.WEATHER_LOAD_FAILED,
@@ -141,6 +152,7 @@ export function Dashboard() {
               <ForecastChart hourly={forecast.hourly} daily={forecast.daily} units={units} />
             </div>
             {marine && <MarineConditionsCard marine={marine} />}
+            {insights && <WeatherInsightsCard insights={insights} />}
           </motion.div>
         )}
       </AnimatePresence>
