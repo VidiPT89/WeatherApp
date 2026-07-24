@@ -89,7 +89,7 @@ Given the project's scope (three separate client apps on top of one backend), te
 
 ## 📄 License
 
-MIT.
+MIT — see [LICENSE](LICENSE).
 
 ---
 
