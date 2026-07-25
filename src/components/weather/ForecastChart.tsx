@@ -79,6 +79,8 @@ export function ForecastChart({ hourly, daily, units }: Props) {
         </div>
       </div>
 
+      <p className="mt-1 text-xs text-text-muted">{dict.forecast.airTemperature}</p>
+
       <div className="mt-4 h-64 overflow-x-auto">
         <div style={{ minWidth: `${chartMinWidth}px`, height: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">

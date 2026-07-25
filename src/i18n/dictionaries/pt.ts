@@ -77,6 +77,7 @@ const pt: Dictionary = {
   },
   forecast: {
     title: "Previsão",
+    airTemperature: "Temperatura do ar",
     hourlyTab: "Horária",
     dailyTab: "Diária",
     max: "Máx",

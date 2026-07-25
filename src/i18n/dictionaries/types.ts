@@ -71,6 +71,7 @@ export interface Dictionary {
   };
   forecast: {
     title: string;
+    airTemperature: string;
     hourlyTab: string;
     dailyTab: string;
     max: string;
