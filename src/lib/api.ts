@@ -1,5 +1,4 @@
 import type {
-  CompareResponse,
   FavoriteResponse,
   ForecastWeatherResponse,
   GeocodingSearchResponse,
@@ -86,10 +85,6 @@ export function fetchWeather(city: string, units?: Units) {
 
 export function fetchForecast(city: string, units?: Units) {
   return get<ForecastWeatherResponse>(`/api/weather/forecast?${buildQuery({ city, units })}`);
-}
-
-export function fetchCompare(city: string, units?: Units) {
-  return get<CompareResponse>(`/api/weather/compare?${buildQuery({ city, units })}`);
 }
 
 export function fetchMarine(city: string, units?: Units) {

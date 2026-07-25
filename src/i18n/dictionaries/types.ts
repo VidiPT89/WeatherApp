@@ -18,8 +18,8 @@ export interface Dictionary {
     featureForecastBody: string;
     featureMarineTitle: string;
     featureMarineBody: string;
-    featureCompareTitle: string;
-    featureCompareBody: string;
+    featureFallbackTitle: string;
+    featureFallbackBody: string;
     featureFavoritesTitle: string;
     featureFavoritesBody: string;
     featureI18nTitle: string;
@@ -37,7 +37,6 @@ export interface Dictionary {
     appName: string;
     ariaLabel: string;
     search: string;
-    compare: string;
     favorites: string;
     history: string;
     settings: string;
@@ -138,16 +137,6 @@ export interface Dictionary {
     themeSubtitle: string;
     themeLight: string;
     themeDark: string;
-  };
-  compare: {
-    title: string;
-    subtitle: string;
-    idlePrompt: string;
-    loading: string;
-    average: string;
-    primary: string;
-    unavailable: string;
-    genericError: string;
   };
   favorites: {
     title: string;
