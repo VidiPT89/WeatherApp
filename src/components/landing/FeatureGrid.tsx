@@ -9,7 +9,7 @@ type Feature = {
     Dictionary["landing"],
     | "featureForecastTitle"
     | "featureMarineTitle"
-    | "featureCompareTitle"
+    | "featureFallbackTitle"
     | "featureFavoritesTitle"
     | "featureI18nTitle"
     | "featureCacheTitle"
@@ -18,7 +18,7 @@ type Feature = {
     Dictionary["landing"],
     | "featureForecastBody"
     | "featureMarineBody"
-    | "featureCompareBody"
+    | "featureFallbackBody"
     | "featureFavoritesBody"
     | "featureI18nBody"
     | "featureCacheBody"
@@ -30,7 +30,7 @@ type Feature = {
 const FEATURES: Feature[] = [
   { titleKey: "featureForecastTitle", bodyKey: "featureForecastBody", icon: "📈", span: "sm:col-span-2" },
   { titleKey: "featureMarineTitle", bodyKey: "featureMarineBody", icon: "🌊" },
-  { titleKey: "featureCompareTitle", bodyKey: "featureCompareBody", icon: "🔀" },
+  { titleKey: "featureFallbackTitle", bodyKey: "featureFallbackBody", icon: "🔀" },
   { titleKey: "featureFavoritesTitle", bodyKey: "featureFavoritesBody", icon: "⭐" },
   { titleKey: "featureI18nTitle", bodyKey: "featureI18nBody", icon: "🌓" },
   { titleKey: "featureCacheTitle", bodyKey: "featureCacheBody", icon: "⚡", span: "sm:col-span-2" },

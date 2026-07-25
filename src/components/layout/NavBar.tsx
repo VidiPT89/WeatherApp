@@ -15,7 +15,6 @@ export function NavBar() {
 
   const links = [
     { href: "/dashboard", label: dict.nav.search },
-    { href: "/compare", label: dict.nav.compare },
     { href: "/favorites", label: dict.nav.favorites },
     { href: "/history", label: dict.nav.history },
     { href: "/settings", label: dict.nav.settings },

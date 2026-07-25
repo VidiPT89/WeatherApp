@@ -23,8 +23,8 @@ const pt: Dictionary = {
     featureMarineTitle: "Condições marítimas",
     featureMarineBody:
       "Temperatura da água, altura, direção e período das ondas para cidades costeiras — sem inventar dados onde não existem.",
-    featureCompareTitle: "Fallback entre fornecedores",
-    featureCompareBody:
+    featureFallbackTitle: "Fallback entre fornecedores",
+    featureFallbackBody:
       "Se o fornecedor principal falhar, a app muda automaticamente para uma alternativa — e mostra-te qual está a usar.",
     featureFavoritesTitle: "Favoritos e histórico",
     featureFavoritesBody: "Guarda as tuas cidades preferidas e revê as pesquisas mais recentes num instante.",
@@ -43,7 +43,6 @@ const pt: Dictionary = {
     appName: "WeatherApp",
     ariaLabel: "Navegação principal",
     search: "Pesquisa",
-    compare: "Comparar",
     favorites: "Favoritos",
     history: "Histórico",
     settings: "Preferências",
@@ -144,16 +143,6 @@ const pt: Dictionary = {
     themeSubtitle: "Escolhe entre tema claro ou escuro.",
     themeLight: "Claro",
     themeDark: "Escuro",
-  },
-  compare: {
-    title: "Comparar providers",
-    subtitle: "A mesma cidade, lado a lado, em cada fonte configurada — mostra o fallback e o circuit breaker em ação.",
-    idlePrompt: "Pesquisa uma cidade para comparar todos os providers configurados.",
-    loading: "A comparar…",
-    average: "Média entre providers:",
-    primary: "Principal",
-    unavailable: "Provider indisponível",
-    genericError: "Não foi possível comparar os providers.",
   },
   favorites: {
     title: "Favoritos",

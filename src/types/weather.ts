@@ -92,18 +92,6 @@ export interface WeatherInsightsResponse {
   fishingConditionLabel: string | null;
 }
 
-export interface ProviderComparisonEntry {
-  provider: string;
-  success: boolean;
-  weather: WeatherResponse | null;
-  errorMessage: string | null;
-}
-
-export interface CompareResponse {
-  city: string;
-  results: ProviderComparisonEntry[];
-}
-
 export interface SearchHistoryResponse {
   city: string;
   units: Units;
