@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendFetch } from "@/lib/backend-client";
-import { withAuth } from "@/lib/route-helpers";
+import { searchParamsOf, withAuth } from "@/lib/route-helpers";
 import type { FavoriteRequest, FavoriteResponse } from "@/types/weather";
 
 export async function GET() {
@@ -19,5 +19,17 @@ export async function POST(request: NextRequest) {
       body,
     });
     return NextResponse.json(data, { status: 201 });
+  });
+}
+
+export async function DELETE(request: NextRequest) {
+  return withAuth(async (token) => {
+    const city = searchParamsOf(request).get("city") ?? "";
+    await backendFetch<void>("/api/v1/weather/favorites", {
+      method: "DELETE",
+      token,
+      searchParams: { city },
+    });
+    return new NextResponse(null, { status: 204 });
   });
 }

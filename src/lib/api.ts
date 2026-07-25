@@ -63,6 +63,15 @@ async function send<T>(path: string, method: string, body: unknown): Promise<T> 
   return response.json() as Promise<T>;
 }
 
+async function del(path: string): Promise<void> {
+  const response = await fetch(path, { method: "DELETE" });
+  if (!response.ok) {
+    const body = await readErrorBody(response);
+    redirectToLoginOnSessionExpiry(body.errorCode);
+    throw new ApiError(response.status, body.message, body.errorCode);
+  }
+}
+
 function buildQuery(params: Record<string, string | undefined>): string {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
@@ -101,6 +110,10 @@ export function fetchFavorites() {
 
 export function addFavorite(city: string) {
   return send<FavoriteResponse>("/api/weather/favorites", "POST", { city });
+}
+
+export function removeFavorite(city: string) {
+  return del(`/api/weather/favorites?${buildQuery({ city })}`);
 }
 
 export function fetchPreferences() {
