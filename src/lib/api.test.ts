@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ApiError, fetchWeather, login } from "@/lib/api";
+import { ApiError, fetchWeather, login, removeFavorite } from "@/lib/api";
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -66,6 +66,29 @@ describe("api client", () => {
     await expect(fetchWeather("Atlantis")).rejects.toThrow();
 
     expect(assignSpy).not.toHaveBeenCalled();
+  });
+
+  it("sends a bodyless DELETE request with the city as a query param", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await removeFavorite("Lisboa");
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/weather/favorites?city=Lisboa"),
+      expect.objectContaining({ method: "DELETE" })
+    );
+  });
+
+  it("throws ApiError with the errorCode when removing a favorite fails", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse({ message: "City is not a favorite: 'Lisboa'", errorCode: "FAVORITE_NOT_FOUND" }, 404));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(removeFavorite("Lisboa")).rejects.toMatchObject(
+      new ApiError(404, "City is not a favorite: 'Lisboa'", "FAVORITE_NOT_FOUND")
+    );
   });
 
   it("sends credentials-free JSON POST requests for auth calls", async () => {

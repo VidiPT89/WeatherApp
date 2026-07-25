@@ -156,6 +156,9 @@ export interface Dictionary {
     addButton: string;
     empty: string;
     addError: string;
+    removeButton: string;
+    removeButtonAriaLabel: string;
+    removeError: string;
   };
   history: {
     title: string;
@@ -186,6 +189,7 @@ export interface Dictionary {
     EMAIL_ALREADY_REGISTERED: string;
     INVALID_CREDENTIALS: string;
     FAVORITE_ALREADY_EXISTS: string;
+    FAVORITE_NOT_FOUND: string;
     UNAUTHENTICATED: string;
     ACCESS_DENIED: string;
     RATE_LIMIT_EXCEEDED: string;

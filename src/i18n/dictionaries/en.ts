@@ -162,6 +162,9 @@ const en: Dictionary = {
     addButton: "Add",
     empty: "You don't have any favorite cities yet.",
     addError: "Could not add the favorite.",
+    removeButton: "Remove",
+    removeButtonAriaLabel: "Remove {city} from favorites",
+    removeError: "Could not remove the favorite.",
   },
   history: {
     title: "History",
@@ -192,6 +195,7 @@ const en: Dictionary = {
     EMAIL_ALREADY_REGISTERED: "An account with this email already exists.",
     INVALID_CREDENTIALS: "Incorrect email or password.",
     FAVORITE_ALREADY_EXISTS: "This city is already in your favorites.",
+    FAVORITE_NOT_FOUND: "This city is no longer in your favorites.",
     UNAUTHENTICATED: "Your session has expired. Please sign in again.",
     ACCESS_DENIED: "You don't have permission to access this resource.",
     RATE_LIMIT_EXCEEDED: "Too many requests. Please wait a moment and try again.",

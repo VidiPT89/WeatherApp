@@ -162,6 +162,9 @@ const pt: Dictionary = {
     addButton: "Adicionar",
     empty: "Ainda não tens cidades favoritas.",
     addError: "Não foi possível adicionar o favorito.",
+    removeButton: "Remover",
+    removeButtonAriaLabel: "Remover {city} dos favoritos",
+    removeError: "Não foi possível remover o favorito.",
   },
   history: {
     title: "Histórico",
@@ -192,6 +195,7 @@ const pt: Dictionary = {
     EMAIL_ALREADY_REGISTERED: "Já existe uma conta com este email.",
     INVALID_CREDENTIALS: "Email ou palavra-passe incorretos.",
     FAVORITE_ALREADY_EXISTS: "Esta cidade já está nos teus favoritos.",
+    FAVORITE_NOT_FOUND: "Esta cidade já não está nos teus favoritos.",
     UNAUTHENTICATED: "A tua sessão expirou. Entra novamente.",
     ACCESS_DENIED: "Não tens permissão para aceder a este recurso.",
     RATE_LIMIT_EXCEEDED: "Demasiados pedidos. Aguarda um momento e tenta novamente.",
