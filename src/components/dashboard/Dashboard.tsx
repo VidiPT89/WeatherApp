@@ -11,7 +11,15 @@ import { WeatherCard } from "@/components/weather/WeatherCard";
 import { WeatherInsightsCard } from "@/components/weather/WeatherInsightsCard";
 import { translateApiError } from "@/i18n/errorMessage";
 import { useTranslations } from "@/i18n/LocaleProvider";
-import { ApiError, fetchForecast, fetchInsights, fetchMarine, fetchPreferences, fetchWeather } from "@/lib/api";
+import {
+  ApiError,
+  fetchForecast,
+  fetchInsights,
+  fetchMarine,
+  fetchPreferences,
+  fetchWeather,
+  fetchWeatherNearby,
+} from "@/lib/api";
 import type {
   ForecastWeatherResponse,
   MarineConditionsResponse,
@@ -33,6 +41,7 @@ export function Dashboard() {
   const [insights, setInsights] = useState<WeatherInsightsResponse | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
 
   const loadCity = useCallback(
     async (targetCity: string, targetUnits: Units) => {
@@ -64,6 +73,19 @@ export function Dashboard() {
     [dict],
   );
 
+  const loadNearby = useCallback(
+    async (latitude: number, longitude: number, targetUnits: Units) => {
+      try {
+        const weatherResult = await fetchWeatherNearby(latitude, longitude, targetUnits);
+        setCity(weatherResult.city);
+        await loadCity(weatherResult.city, targetUnits);
+      } catch {
+        /* Reverse geocoding or the lookup failed -- fall back to the manual-search idle state. */
+      }
+    },
+    [loadCity],
+  );
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -78,17 +100,36 @@ export function Dashboard() {
       }
 
       const initialCity = searchParams.get("city");
-      if (initialCity && !isCancelled) {
-        setCity(initialCity);
-        void loadCity(initialCity, resolvedUnits);
+      if (initialCity) {
+        if (!isCancelled) {
+          setCity(initialCity);
+          void loadCity(initialCity, resolvedUnits);
+        }
+        return;
       }
+
+      if (typeof navigator === "undefined" || !navigator.geolocation) return;
+
+      setIsLocating(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (isCancelled) return;
+          setIsLocating(false);
+          void loadNearby(position.coords.latitude, position.coords.longitude, resolvedUnits);
+        },
+        () => {
+          if (isCancelled) return;
+          setIsLocating(false);
+        },
+        { timeout: 10_000 },
+      );
     }
 
     void init();
     return () => {
       isCancelled = true;
     };
-  }, [searchParams, loadCity]);
+  }, [searchParams, loadCity, loadNearby]);
 
   function handleSelectCity(selectedCity: string) {
     setCity(selectedCity);
@@ -108,7 +149,19 @@ export function Dashboard() {
       </div>
 
       <AnimatePresence mode="wait">
-        {state === "idle" && (
+        {state === "idle" && isLocating && (
+          <motion.p
+            key="locating"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="animate-pulse rounded-2xl border border-dashed border-border p-8 text-center text-text-muted"
+          >
+            {dict.dashboard.locating}
+          </motion.p>
+        )}
+
+        {state === "idle" && !isLocating && (
           <motion.p
             key="idle"
             initial={{ opacity: 0 }}

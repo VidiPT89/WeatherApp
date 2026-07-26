@@ -53,6 +53,7 @@ export interface Dictionary {
   dashboard: {
     idlePrompt: string;
     loading: string;
+    locating: string;
   };
   weatherCard: {
     freshData: string;

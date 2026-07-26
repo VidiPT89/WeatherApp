@@ -83,6 +83,12 @@ export function fetchWeather(city: string, units?: Units) {
   return get<WeatherResponse>(`/api/weather?${buildQuery({ city, units })}`);
 }
 
+export function fetchWeatherNearby(latitude: number, longitude: number, units?: Units) {
+  return get<WeatherResponse>(
+    `/api/weather/nearby?${buildQuery({ lat: latitude.toString(), lon: longitude.toString(), units })}`,
+  );
+}
+
 export function fetchForecast(city: string, units?: Units) {
   return get<ForecastWeatherResponse>(`/api/weather/forecast?${buildQuery({ city, units })}`);
 }
