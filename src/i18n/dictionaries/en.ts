@@ -59,6 +59,7 @@ const en: Dictionary = {
   dashboard: {
     idlePrompt: "Search for a city to see the current weather and forecast.",
     loading: "Loading…",
+    locating: "Finding your location…",
   },
   weatherCard: {
     freshData: "Fresh data",
