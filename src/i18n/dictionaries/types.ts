@@ -40,6 +40,7 @@ export interface Dictionary {
     favorites: string;
     history: string;
     settings: string;
+    admin: string;
     logout: string;
   };
   search: {
@@ -154,6 +155,22 @@ export interface Dictionary {
   history: {
     title: string;
     subtitle: string;
+    empty: string;
+  };
+  admin: {
+    title: string;
+    subtitle: string;
+    columnEmail: string;
+    columnRole: string;
+    columnCreated: string;
+    roleAdmin: string;
+    roleUser: string;
+    deleteButton: string;
+    deleteButtonAriaLabel: string;
+    confirmMessage: string;
+    confirmYes: string;
+    confirmCancel: string;
+    deleteError: string;
     empty: string;
   };
   auth: {

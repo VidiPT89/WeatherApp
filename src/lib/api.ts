@@ -6,6 +6,7 @@ import type {
   SearchHistoryResponse,
   Units,
   UserPreferences,
+  UserResponse,
   WeatherInsightsResponse,
   WeatherResponse,
 } from "@/types/weather";
@@ -119,6 +120,18 @@ export function removeFavorite(city: string) {
 
 export function fetchPreferences() {
   return get<UserPreferences>("/api/user/preferences");
+}
+
+export function fetchMe() {
+  return get<UserResponse>("/api/user/me");
+}
+
+export function fetchAdminUsers() {
+  return get<UserResponse[]>("/api/admin/users");
+}
+
+export function deleteAdminUser(id: number) {
+  return del(`/api/admin/users/${id}`);
 }
 
 export function updatePreferences(units: Units) {
