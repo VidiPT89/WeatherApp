@@ -8,7 +8,11 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { useTranslations } from "@/i18n/LocaleProvider";
 import { logout } from "@/lib/api";
 
-export function NavBar() {
+type Props = {
+  isAdmin: boolean;
+};
+
+export function NavBar({ isAdmin }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { dict } = useTranslations();
@@ -18,6 +22,7 @@ export function NavBar() {
     { href: "/favorites", label: dict.nav.favorites },
     { href: "/history", label: dict.nav.history },
     { href: "/settings", label: dict.nav.settings },
+    ...(isAdmin ? [{ href: "/admin", label: dict.nav.admin }] : []),
   ];
 
   async function handleLogout() {

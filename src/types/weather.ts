@@ -111,6 +111,16 @@ export interface UserPreferences {
   units: Units;
 }
 
+export type UserRole = "user" | "admin";
+
+export interface UserResponse {
+  id: number;
+  email: string;
+  role: UserRole;
+  units: Units;
+  createdAt: string;
+}
+
 export interface CitySuggestion {
   name: string;
   country: string;
