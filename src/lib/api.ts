@@ -3,10 +3,8 @@ import type {
   ForecastWeatherResponse,
   GeocodingSearchResponse,
   MarineConditionsResponse,
-  SearchHistoryResponse,
   Units,
   UserPreferences,
-  UserResponse,
   WeatherInsightsResponse,
   WeatherResponse,
 } from "@/types/weather";
@@ -102,12 +100,12 @@ export function fetchInsights(city: string, units?: Units) {
   return get<WeatherInsightsResponse>(`/api/weather/insights?${buildQuery({ city, units })}`);
 }
 
-export function fetchHistory() {
-  return get<SearchHistoryResponse[]>("/api/weather/history");
+export function deleteHistoryEntry(id: number) {
+  return del(`/api/weather/history/${id}`);
 }
 
-export function fetchFavorites() {
-  return get<FavoriteResponse[]>("/api/weather/favorites");
+export function clearHistory() {
+  return del("/api/weather/history");
 }
 
 export function addFavorite(city: string) {
@@ -120,14 +118,6 @@ export function removeFavorite(city: string) {
 
 export function fetchPreferences() {
   return get<UserPreferences>("/api/user/preferences");
-}
-
-export function fetchMe() {
-  return get<UserResponse>("/api/user/me");
-}
-
-export function fetchAdminUsers() {
-  return get<UserResponse[]>("/api/admin/users");
 }
 
 export function deleteAdminUser(id: number) {

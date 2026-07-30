@@ -162,6 +162,13 @@ const pt: Dictionary = {
     title: "Histórico",
     subtitle: "As tuas pesquisas mais recentes.",
     empty: "Ainda não pesquisaste nenhuma cidade.",
+    deleteButtonAriaLabel: "Remover {city} do histórico",
+    deleteError: "Não foi possível remover esta entrada do histórico.",
+    clearButton: "Limpar tudo",
+    clearConfirmMessage: "Limpar definitivamente todo o teu histórico de pesquisas? Não é possível desfazer esta ação.",
+    clearConfirmYes: "Limpar histórico",
+    clearConfirmCancel: "Cancelar",
+    clearError: "Não foi possível limpar o histórico.",
   },
   admin: {
     title: "Gestão de utilizadores",
@@ -212,6 +219,7 @@ const pt: Dictionary = {
     GENERIC: "Não foi possível concluir o pedido.",
     WEATHER_LOAD_FAILED: "Não foi possível obter o tempo.",
     ADMIN_SELF_DELETE: "Não podes eliminar a tua própria conta de administrador.",
+    SEARCH_HISTORY_ENTRY_NOT_FOUND: "Esta entrada já não está no teu histórico.",
   },
 };
 

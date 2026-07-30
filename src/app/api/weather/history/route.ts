@@ -9,3 +9,10 @@ export async function GET() {
     return NextResponse.json(data);
   });
 }
+
+export async function DELETE() {
+  return withAuth(async (token) => {
+    await backendFetch<void>("/api/v1/weather/history", { method: "DELETE", token });
+    return new NextResponse(null, { status: 204 });
+  });
+}
