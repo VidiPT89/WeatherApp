@@ -172,6 +172,7 @@ export interface Dictionary {
     confirmCancel: string;
     deleteError: string;
     empty: string;
+    loadError: string;
   };
   auth: {
     loginTitle: string;
@@ -204,6 +205,7 @@ export interface Dictionary {
     INTERNAL_ERROR: string;
     GENERIC: string;
     WEATHER_LOAD_FAILED: string;
+    ADMIN_SELF_DELETE: string;
   };
 }
 

@@ -10,9 +10,10 @@ import type { UserResponse } from "@/types/weather";
 type Props = {
   initialUsers: UserResponse[];
   currentUserId: number;
+  initialLoadError?: boolean;
 };
 
-export function AdminView({ initialUsers, currentUserId }: Props) {
+export function AdminView({ initialUsers, currentUserId, initialLoadError = false }: Props) {
   const { dict, locale } = useTranslations();
   const [users, setUsers] = useState<UserResponse[]>(initialUsers);
   const [confirmingId, setConfirmingId] = useState<number | null>(null);
@@ -46,10 +47,18 @@ export function AdminView({ initialUsers, currentUserId }: Props) {
         </p>
       )}
 
-      {users.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-8 text-center text-text-muted">
-          {dict.admin.empty}
+      {initialLoadError && (
+        <p role="alert" className="max-w-md rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
+          {dict.admin.loadError}
         </p>
+      )}
+
+      {users.length === 0 ? (
+        !initialLoadError && (
+          <p className="rounded-2xl border border-dashed border-border p-8 text-center text-text-muted">
+            {dict.admin.empty}
+          </p>
+        )
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border">
           <table className="w-full text-left text-sm">

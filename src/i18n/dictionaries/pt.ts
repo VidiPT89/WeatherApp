@@ -178,6 +178,7 @@ const pt: Dictionary = {
     confirmCancel: "Cancelar",
     deleteError: "Não foi possível eliminar esta conta.",
     empty: "Ainda não há outras contas.",
+    loadError: "Não foi possível carregar a lista de contas.",
   },
   auth: {
     loginTitle: "Entrar",
@@ -210,6 +211,7 @@ const pt: Dictionary = {
     INTERNAL_ERROR: "Ocorreu um erro inesperado.",
     GENERIC: "Não foi possível concluir o pedido.",
     WEATHER_LOAD_FAILED: "Não foi possível obter o tempo.",
+    ADMIN_SELF_DELETE: "Não podes eliminar a tua própria conta de administrador.",
   },
 };
 

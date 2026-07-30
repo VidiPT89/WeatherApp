@@ -1,6 +1,6 @@
 # 🌤️ WeatherApp — Web Client
 
-> Next.js client for the [Weather API Aggregator](https://github.com/VidiPT89/WeatherAPI) — makes the backend's cache, provider fallback and multi-provider comparison **visible**, live, in the UI.
+> Next.js client for the [Weather API Aggregator](https://github.com/VidiPT89/WeatherAPI) — makes the backend's cache and provider fallback **visible**, live, in the UI.
 
 **Live demo:** [weather-app-psi-inky-53.vercel.app](https://weather-app-psi-inky-53.vercel.app)
 
@@ -9,11 +9,12 @@ This is one of three clients (Web / [iOS](https://github.com/VidiPT89/WeatherApp
 ## 📦 What's Inside
 
 - 🔎 City search with debounced autocomplete (backend geocoding endpoint)
+- 📍 **Auto-detect location on load** — the Dashboard asks the browser's Geolocation API for the user's position and resolves weather for it via a `/weather/nearby` BFF route, falling back to manual search if permission is denied
 - 🌡️ Current weather + hourly/daily forecast chart (Recharts), with a °C/°F toggle
 - ⚡ **Cache badge** — "dados frescos" vs "servido da cache há Xs", computed live from the response's `fromCache` flag and timestamp
 - 🔁 **Fallback banner** — appears when the response was served by the secondary provider, surfacing the backend's circuit breaker/fallback in real time
-- ⚖️ **Provider comparison screen** — the same city, side by side, across every configured provider, with a computed average
 - 🔐 Auth (register/login), favorite cities, search history, saved unit preference
+- 🛠️ **Admin dashboard** — role-gated `/admin` page (nav link only shown to admins) listing every registered user, with account deletion
 - ✅ Loading, error and empty states treated as first-class UI states, not afterthoughts
 
 ## 🛠️ Tech Stack
@@ -46,10 +47,10 @@ Keeping the JWT server-side (httpOnly cookie, never `localStorage`) means client
 ```
 src/
 ├── app/
-│   ├── (app)/                  # authenticated pages: dashboard, compare, favorites, history, settings
+│   ├── (app)/                  # authenticated pages: dashboard, favorites, history, settings, admin
 │   ├── login/, register/       # public auth pages
-│   └── api/                    # BFF route handlers (auth, weather, forecast, compare, favorites, preferences, geocoding)
-├── components/                 # feature-organized: weather/, search/, compare/, favorites/, settings/, layout/
+│   └── api/                    # BFF route handlers (auth, weather, forecast, nearby, favorites, preferences, geocoding, admin)
+├── components/                 # feature-organized: weather/, search/, favorites/, settings/, admin/, layout/
 ├── lib/                        # backend-client (server), api client (browser), format/weather-condition utils
 ├── hooks/                      # useDebouncedValue, useNow
 └── types/weather.ts            # TS types mirroring the backend's DTOs
@@ -75,12 +76,12 @@ Open [http://localhost:3000](http://localhost:3000). The backend URL is configur
 ## ✅ Tests
 
 ```bash
-npm test        # Vitest — business logic: API client, cache-age formatting, weather-condition mapping, provider-comparison averaging
+npm test        # Vitest — business logic: API client, cache-age formatting, weather-condition mapping, token refresh
 npx tsc --noEmit # type check
 npx eslint .     # lint
 ```
 
-Given the project's scope (three separate client apps on top of one backend), test effort is weighted toward business logic (API client error handling, cache-badge age math, fallback/average computation) rather than chasing a literal coverage percentage on presentational components — golden-path and edge-case flows (auth, search, fallback, cache) were additionally verified manually in-browser.
+Given the project's scope (three separate client apps on top of one backend), test effort is weighted toward business logic (API client error handling, cache-badge age math, token refresh) rather than chasing a literal coverage percentage on presentational components — golden-path and edge-case flows (auth, search, fallback, cache, admin) were additionally verified manually in-browser.
 
 ## 📝 Notes
 
