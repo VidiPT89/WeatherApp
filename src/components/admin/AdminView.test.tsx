@@ -58,8 +58,8 @@ describe("AdminView", () => {
     expect(deleteAdminUserMock).not.toHaveBeenCalled();
   });
 
-  it("shows an error message and keeps the row when deleting fails", async () => {
-    deleteAdminUserMock.mockRejectedValue(new ApiError(400, "You cannot delete your own admin account."));
+  it("shows a generic error message and keeps the row when deleting fails without a known error code", async () => {
+    deleteAdminUserMock.mockRejectedValue(new ApiError(500, "Something went wrong."));
     render(<AdminView initialUsers={[buildUser(1, "admin@example.com", "admin"), buildUser(2, "someone@example.com")]} currentUserId={1} />);
 
     fireEvent.click(screen.getByRole("button", { name: /Eliminar conta someone@example.com/i }));
@@ -69,9 +69,31 @@ describe("AdminView", () => {
     expect(screen.getByText("someone@example.com")).toBeInTheDocument();
   });
 
+  it("shows a specific error message when the API rejects deleting your own account out-of-band", async () => {
+    deleteAdminUserMock.mockRejectedValue(
+      new ApiError(400, "You cannot delete your own admin account.", "VALIDATION_FAILED"),
+    );
+    render(<AdminView initialUsers={[buildUser(1, "admin@example.com", "admin"), buildUser(2, "someone@example.com")]} currentUserId={1} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Eliminar conta someone@example.com/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Eliminar conta" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Não podes eliminar a tua própria conta de administrador.",
+    );
+    expect(screen.getByText("someone@example.com")).toBeInTheDocument();
+  });
+
   it("shows the empty state when there are no other accounts", () => {
     render(<AdminView initialUsers={[]} currentUserId={1} />);
 
     expect(screen.getByText("Ainda não há outras contas.")).toBeInTheDocument();
+  });
+
+  it("shows a load-error message instead of the empty state when the initial fetch failed", () => {
+    render(<AdminView initialUsers={[]} currentUserId={1} initialLoadError />);
+
+    expect(screen.getByRole("alert")).toHaveTextContent("Não foi possível carregar a lista de contas.");
+    expect(screen.queryByText("Ainda não há outras contas.")).not.toBeInTheDocument();
   });
 });

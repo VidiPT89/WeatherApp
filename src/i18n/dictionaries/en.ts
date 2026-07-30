@@ -178,6 +178,7 @@ const en: Dictionary = {
     confirmCancel: "Cancel",
     deleteError: "Couldn't delete this account.",
     empty: "No other accounts yet.",
+    loadError: "Couldn't load the list of accounts.",
   },
   auth: {
     loginTitle: "Sign in",
@@ -210,6 +211,7 @@ const en: Dictionary = {
     INTERNAL_ERROR: "Something went wrong.",
     GENERIC: "Could not complete the request.",
     WEATHER_LOAD_FAILED: "Could not load the weather.",
+    ADMIN_SELF_DELETE: "You can't delete your own admin account.",
   },
 };
 

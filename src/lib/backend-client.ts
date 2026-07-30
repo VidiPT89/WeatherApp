@@ -1,5 +1,6 @@
 import "server-only";
-import type { ApiErrorBody } from "@/types/weather";
+import { cache } from "react";
+import type { ApiErrorBody, UserResponse } from "@/types/weather";
 
 const BASE_URL = process.env.WEATHER_API_URL ?? "http://localhost:8080";
 
@@ -58,3 +59,12 @@ async function extractErrorBody(response: Response): Promise<ApiErrorBody> {
     return { message: response.statusText };
   }
 }
+
+/**
+ * Fetches the current user, memoized per request via React's `cache()`. Both `(app)/layout.tsx`
+ * (for the nav's admin link) and `(app)/admin/page.tsx` (for the role check) need this on every
+ * `/admin` render — `cache()` ensures they share one network call instead of firing it twice.
+ */
+export const getCurrentUser = cache(async (token: string): Promise<UserResponse | null> => {
+  return backendFetch<UserResponse>("/api/v1/user/me", { token }).catch(() => null);
+});

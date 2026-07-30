@@ -1,11 +1,10 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { backendFetch } from "@/lib/backend-client";
+import { getCurrentUser } from "@/lib/backend-client";
 import { getToken } from "@/lib/session";
-import type { UserResponse } from "@/types/weather";
 
 export default async function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const token = await getToken();
-  const me = token ? await backendFetch<UserResponse>("/api/v1/user/me", { token }).catch(() => null) : null;
+  const me = token ? await getCurrentUser(token) : null;
 
   return (
     <div className="flex flex-1 flex-col">
