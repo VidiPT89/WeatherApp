@@ -6,7 +6,7 @@ const pt: Dictionary = {
     heroTitle: "O tempo, sem",
     heroTitleHighlight: "surpresas.",
     heroSubtitle:
-      "Previsão de 16 dias, condições marítimas e comparação em tempo real entre fornecedores — tudo numa app rápida, em português ou inglês, no tema que preferires.",
+      "Previsão de 16 dias, condições marítimas e fallback automático entre fornecedores — tudo numa app rápida, em português ou inglês, no tema que preferires.",
     ctaPrimary: "Criar conta grátis",
     ctaSecondary: "Já tenho conta",
     statForecastValue: "16 dias",

@@ -6,7 +6,7 @@ const en: Dictionary = {
     heroTitle: "Weather, without the",
     heroTitleHighlight: "surprises.",
     heroSubtitle:
-      "16-day forecasts, sea conditions, and real-time provider comparison — all in one fast app, in Portuguese or English, in whichever theme you prefer.",
+      "16-day forecasts, sea conditions, and automatic fallback between providers — all in one fast app, in Portuguese or English, in whichever theme you prefer.",
     ctaPrimary: "Create a free account",
     ctaSecondary: "I already have an account",
     statForecastValue: "16 days",
