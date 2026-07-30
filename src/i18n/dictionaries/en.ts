@@ -162,6 +162,13 @@ const en: Dictionary = {
     title: "History",
     subtitle: "Your most recent searches.",
     empty: "You haven't searched for a city yet.",
+    deleteButtonAriaLabel: "Remove {city} from history",
+    deleteError: "Could not remove this entry from your history.",
+    clearButton: "Clear all",
+    clearConfirmMessage: "Permanently clear your entire search history? This can't be undone.",
+    clearConfirmYes: "Clear history",
+    clearConfirmCancel: "Cancel",
+    clearError: "Could not clear your history.",
   },
   admin: {
     title: "User management",
@@ -212,6 +219,7 @@ const en: Dictionary = {
     GENERIC: "Could not complete the request.",
     WEATHER_LOAD_FAILED: "Could not load the weather.",
     ADMIN_SELF_DELETE: "You can't delete your own admin account.",
+    SEARCH_HISTORY_ENTRY_NOT_FOUND: "This entry is no longer in your history.",
   },
 };
 

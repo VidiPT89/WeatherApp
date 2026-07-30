@@ -93,6 +93,7 @@ export interface WeatherInsightsResponse {
 }
 
 export interface SearchHistoryResponse {
+  id: number;
   city: string;
   units: Units;
   searchedAt: string;

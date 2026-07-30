@@ -156,6 +156,13 @@ export interface Dictionary {
     title: string;
     subtitle: string;
     empty: string;
+    deleteButtonAriaLabel: string;
+    deleteError: string;
+    clearButton: string;
+    clearConfirmMessage: string;
+    clearConfirmYes: string;
+    clearConfirmCancel: string;
+    clearError: string;
   };
   admin: {
     title: string;
@@ -206,6 +213,7 @@ export interface Dictionary {
     GENERIC: string;
     WEATHER_LOAD_FAILED: string;
     ADMIN_SELF_DELETE: string;
+    SEARCH_HISTORY_ENTRY_NOT_FOUND: string;
   };
 }
 
