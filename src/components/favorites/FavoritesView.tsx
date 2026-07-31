@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { CitySuggestionsList } from "@/components/search/CitySuggestionsList";
+import { useCitySuggestions } from "@/hooks/useCitySuggestions";
 import { translateApiError } from "@/i18n/errorMessage";
 import { interpolate } from "@/i18n/interpolate";
 import { useTranslations } from "@/i18n/LocaleProvider";
 import { ApiError, addFavorite, removeFavorite } from "@/lib/api";
-import type { FavoriteResponse } from "@/types/weather";
+import type { CitySuggestion, FavoriteResponse } from "@/types/weather";
 
 type Props = {
   initialFavorites: FavoriteResponse[];
@@ -20,22 +22,44 @@ export function FavoritesView({ initialFavorites }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [removingCity, setRemovingCity] = useState<string | null>(null);
+  const { suggestions, isOpen, isQueryLongEnough, containerRef, openIfHasSuggestions, close, reset } =
+    useCitySuggestions(city);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!city.trim()) return;
-
+  async function addCity(cityName: string) {
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      const favorite = await addFavorite(city.trim());
+      const favorite = await addFavorite(cityName);
       setFavorites((current) => [favorite, ...current]);
       setCity("");
+      reset();
     } catch (error) {
       setErrorMessage(error instanceof ApiError ? translateApiError(dict, error, dict.favorites.addError) : dict.favorites.addError);
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  // Only ever add a city that came back from the geocoding suggestions --
+  // never the arbitrary free text the user typed. If what's currently typed
+  // happens to match one of the loaded suggestions (e.g. the user typed the
+  // full name and pressed Enter instead of clicking it), treat that as a
+  // valid selection too.
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = city.trim();
+    if (!trimmed) return;
+
+    const matched = suggestions.find((suggestion) => suggestion.name.toLowerCase() === trimmed.toLowerCase());
+    if (!matched) return;
+
+    close();
+    void addCity(matched.name);
+  }
+
+  function handleSelectSuggestion(suggestion: CitySuggestion) {
+    close();
+    void addCity(suggestion.name);
   }
 
   async function handleRemove(favoriteCity: string) {
@@ -64,23 +88,32 @@ export function FavoritesView({ initialFavorites }: Props) {
         <p className="mt-1 text-sm text-text-muted">{dict.favorites.subtitle}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex max-w-md gap-2">
-        <input
-          type="text"
-          value={city}
-          onChange={(event) => setCity(event.target.value)}
-          placeholder={dict.favorites.placeholder}
-          aria-label={dict.favorites.ariaLabel}
-          className="w-full rounded-lg border border-border bg-surface-raised px-4 py-2.5 text-text outline-none transition focus:border-accent focus:ring-1 focus:ring-accent"
+      <div ref={containerRef} className="relative max-w-md">
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <input
+            type="text"
+            value={city}
+            onChange={(event) => setCity(event.target.value)}
+            onFocus={openIfHasSuggestions}
+            placeholder={dict.favorites.placeholder}
+            aria-label={dict.favorites.ariaLabel}
+            className="w-full rounded-lg border border-border bg-surface-raised px-4 py-2.5 text-text outline-none transition focus:border-accent focus:ring-1 focus:ring-accent"
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="shrink-0 rounded-lg bg-accent px-4 py-2.5 font-medium text-accent-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {dict.favorites.addButton}
+          </button>
+        </form>
+
+        <CitySuggestionsList
+          suggestions={suggestions}
+          visible={isOpen && isQueryLongEnough}
+          onSelect={handleSelectSuggestion}
         />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="shrink-0 rounded-lg bg-accent px-4 py-2.5 font-medium text-accent-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {dict.favorites.addButton}
-        </button>
-      </form>
+      </div>
 
       {errorMessage && (
         <p role="alert" className="max-w-md rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
