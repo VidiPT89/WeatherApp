@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { CacheBadge } from "@/components/weather/CacheBadge";
 import { FallbackBanner } from "@/components/weather/FallbackBanner";
 import { useTranslations } from "@/i18n/LocaleProvider";
+import { translateWeatherDescription } from "@/i18n/weatherDescription";
 import { formatHour, formatTemperature, formatWindSpeed } from "@/lib/format";
 import { backgroundGradientFor } from "@/lib/weather-condition";
 import type { DailyForecastEntry, WeatherResponse } from "@/types/weather";
@@ -41,7 +42,7 @@ export function WeatherCard({ weather, today }: Props) {
         >
           {formatTemperature(weather.temperature, weather.units)}
         </motion.p>
-        <p className="mt-1 text-white/90">{weather.description}</p>
+        <p className="mt-1 text-white/90">{translateWeatherDescription(weather.description, locale)}</p>
 
         <dl className="mt-6 grid grid-cols-3 gap-4 text-sm text-white/90">
           <div>
