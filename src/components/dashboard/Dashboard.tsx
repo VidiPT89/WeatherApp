@@ -121,7 +121,11 @@ export function Dashboard() {
           if (isCancelled) return;
           setIsLocating(false);
         },
-        { timeout: 10_000 },
+        // A weather lookup only needs city-level precision, so a position the browser already
+        // resolved recently is just as good as a brand new one -- maximumAge lets it return
+        // that cached fix instantly instead of re-resolving from scratch every time this effect
+        // runs (e.g. navigating back to the Dashboard within the same session).
+        { timeout: 10_000, maximumAge: 5 * 60 * 1000 },
       );
     }
 
