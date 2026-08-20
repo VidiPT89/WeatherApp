@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendFetch } from "@/lib/backend-client";
-import { withAuth } from "@/lib/route-helpers";
+import { withOptionalAuth } from "@/lib/route-helpers";
 import type { WeatherInsightsResponse } from "@/types/weather";
 
 export async function GET(request: NextRequest) {
-  return withAuth(async (token) => {
+  return withOptionalAuth(async (token) => {
     const data = await backendFetch<WeatherInsightsResponse>("/api/v1/weather/insights", {
       token,
       searchParams: {

@@ -9,6 +9,7 @@ const en: Dictionary = {
       "16-day forecasts, sea conditions, and automatic fallback between providers — all in one fast app, in Portuguese or English, in whichever theme you prefer.",
     ctaPrimary: "Create a free account",
     ctaSecondary: "I already have an account",
+    ctaTertiary: "Try it without an account",
     statForecastValue: "16 days",
     statForecastLabel: "of daily forecast",
     statProvidersValue: "2",
@@ -48,6 +49,7 @@ const en: Dictionary = {
     settings: "Settings",
     admin: "Admin",
     logout: "Log out",
+    login: "Sign in",
   },
   search: {
     placeholder: "Search for a city…",
@@ -56,6 +58,12 @@ const en: Dictionary = {
   },
   unitToggle: {
     ariaLabel: "Temperature units",
+  },
+  signIn: {
+    requiredFavorites: "Sign in to save your favorite cities.",
+    requiredHistory: "Sign in to save your search history.",
+    requiredSettings: "Sign in to save your unit preference.",
+    action: "Sign in / Create account",
   },
   dashboard: {
     idlePrompt: "Search for a city to see the current weather and forecast.",

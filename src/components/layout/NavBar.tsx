@@ -10,9 +10,10 @@ import { logout } from "@/lib/api";
 
 type Props = {
   isAdmin: boolean;
+  isLoggedIn: boolean;
 };
 
-export function NavBar({ isAdmin }: Props) {
+export function NavBar({ isAdmin, isLoggedIn }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { dict } = useTranslations();
@@ -64,13 +65,22 @@ export function NavBar({ isAdmin }: Props) {
             );
           })}
           <li>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-md px-3 py-1.5 text-sm text-text-muted transition hover:text-danger"
-            >
-              {dict.nav.logout}
-            </button>
+            {isLoggedIn ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-md px-3 py-1.5 text-sm text-text-muted transition hover:text-danger"
+              >
+                {dict.nav.logout}
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-md px-3 py-1.5 text-sm text-text-muted transition hover:text-text"
+              >
+                {dict.nav.login}
+              </Link>
+            )}
           </li>
           <li className="flex items-center gap-2 pl-2">
             <LocaleToggle />

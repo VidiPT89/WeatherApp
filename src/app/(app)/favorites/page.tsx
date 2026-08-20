@@ -9,5 +9,5 @@ export default async function FavoritesPage() {
     ? await backendFetch<FavoriteResponse[]>("/api/v1/weather/favorites", { token }).catch(() => [])
     : [];
 
-  return <FavoritesView initialFavorites={favorites} />;
+  return <FavoritesView initialFavorites={favorites} isLoggedIn={Boolean(token)} />;
 }

@@ -9,6 +9,7 @@ const pt: Dictionary = {
       "Previsão de 16 dias, condições marítimas e fallback automático entre fornecedores — tudo numa app rápida, em português ou inglês, no tema que preferires.",
     ctaPrimary: "Criar conta grátis",
     ctaSecondary: "Já tenho conta",
+    ctaTertiary: "Experimentar sem conta",
     statForecastValue: "16 dias",
     statForecastLabel: "de previsão diária",
     statProvidersValue: "2",
@@ -48,6 +49,7 @@ const pt: Dictionary = {
     settings: "Preferências",
     admin: "Administração",
     logout: "Sair",
+    login: "Iniciar sessão",
   },
   search: {
     placeholder: "Pesquisar cidade…",
@@ -56,6 +58,12 @@ const pt: Dictionary = {
   },
   unitToggle: {
     ariaLabel: "Unidades de temperatura",
+  },
+  signIn: {
+    requiredFavorites: "Inicia sessão para guardares as tuas cidades favoritas.",
+    requiredHistory: "Inicia sessão para guardares o teu histórico de pesquisas.",
+    requiredSettings: "Inicia sessão para guardares a tua preferência de unidades.",
+    action: "Iniciar sessão / Criar conta",
   },
   dashboard: {
     idlePrompt: "Pesquisa uma cidade para veres o tempo atual e a previsão.",

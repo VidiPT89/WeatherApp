@@ -9,5 +9,5 @@ export default async function HistoryPage() {
     ? await backendFetch<SearchHistoryResponse[]>("/api/v1/weather/history", { token }).catch(() => [])
     : [];
 
-  return <HistoryView history={history} />;
+  return <HistoryView history={history} isLoggedIn={Boolean(token)} />;
 }
