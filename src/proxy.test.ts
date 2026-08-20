@@ -29,7 +29,18 @@ describe("proxy middleware", () => {
     vi.resetAllMocks();
   });
 
-  it.each(["/", "/login", "/login/callback", "/register", "/api/weather", "/api/auth/login"])(
+  it.each([
+    "/",
+    "/login",
+    "/login/callback",
+    "/register",
+    "/dashboard",
+    "/favorites",
+    "/history",
+    "/settings",
+    "/api/weather",
+    "/api/auth/login",
+  ])(
     "lets public/API path %s through without checking for a token",
     async (path) => {
       const response = await proxy(buildRequest(path));
@@ -40,7 +51,7 @@ describe("proxy middleware", () => {
   );
 
   it("redirects to /login when there is no auth cookie on a protected path", async () => {
-    const response = await proxy(buildRequest("/dashboard"));
+    const response = await proxy(buildRequest("/admin"));
 
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toBe("https://example.com/login");
@@ -48,7 +59,7 @@ describe("proxy middleware", () => {
 
   it("passes a protected request through unchanged when the token is not near expiry", async () => {
     const token = buildToken(60 * 60);
-    const response = await proxy(buildRequest("/dashboard", { [AUTH_COOKIE_NAME]: token }));
+    const response = await proxy(buildRequest("/admin", { [AUTH_COOKIE_NAME]: token }));
 
     expect(response.status).toBe(200);
     expect(refreshTokens).not.toHaveBeenCalled();
@@ -56,7 +67,7 @@ describe("proxy middleware", () => {
 
   it("does not attempt a refresh when near expiry but no refresh-token cookie is present", async () => {
     const token = buildToken(60);
-    const response = await proxy(buildRequest("/dashboard", { [AUTH_COOKIE_NAME]: token }));
+    const response = await proxy(buildRequest("/admin", { [AUTH_COOKIE_NAME]: token }));
 
     expect(response.status).toBe(200);
     expect(refreshTokens).not.toHaveBeenCalled();
@@ -72,7 +83,7 @@ describe("proxy middleware", () => {
     });
 
     const response = await proxy(
-      buildRequest("/dashboard", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "valid-refresh-token" }),
+      buildRequest("/admin", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "valid-refresh-token" }),
     );
 
     expect(refreshTokens).toHaveBeenCalledWith("valid-refresh-token");
@@ -85,7 +96,7 @@ describe("proxy middleware", () => {
     vi.mocked(refreshTokens).mockResolvedValue(null);
 
     const response = await proxy(
-      buildRequest("/dashboard", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "revoked-refresh-token" }),
+      buildRequest("/admin", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "revoked-refresh-token" }),
     );
 
     expect(refreshTokens).toHaveBeenCalledWith("revoked-refresh-token");
@@ -94,7 +105,7 @@ describe("proxy middleware", () => {
   });
 
   it("treats an unparsable token as not near expiry rather than crashing", async () => {
-    const response = await proxy(buildRequest("/dashboard", { [AUTH_COOKIE_NAME]: "not-a-real-jwt" }));
+    const response = await proxy(buildRequest("/admin", { [AUTH_COOKIE_NAME]: "not-a-real-jwt" }));
 
     expect(response.status).toBe(200);
     expect(refreshTokens).not.toHaveBeenCalled();
@@ -103,7 +114,7 @@ describe("proxy middleware", () => {
   it("treats a token with no exp claim as not near expiry", async () => {
     const token = buildToken(null);
     const response = await proxy(
-      buildRequest("/dashboard", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "some-refresh-token" }),
+      buildRequest("/admin", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "some-refresh-token" }),
     );
 
     expect(response.status).toBe(200);

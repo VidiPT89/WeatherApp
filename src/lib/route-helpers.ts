@@ -51,6 +51,49 @@ export async function withAuth(
   }
 }
 
+/**
+ * Like `withAuth`, but for endpoints the backend now serves anonymously (weather lookup,
+ * forecast, marine, insights, geocoding): passes the token along when the caller happens to be
+ * signed in (so preferences/history still apply server-side), but never blocks the request just
+ * because there isn't one.
+ */
+export async function withOptionalAuth(
+  handler: (token: string | undefined) => Promise<NextResponse>
+): Promise<NextResponse> {
+  const token = await getToken();
+  if (!token) {
+    try {
+      return await handler(undefined);
+    } catch (error) {
+      return errorResponse(error);
+    }
+  }
+
+  try {
+    return await handler(token);
+  } catch (error) {
+    if (!(error instanceof BackendApiError) || error.errorCode !== "UNAUTHENTICATED") {
+      return errorResponse(error);
+    }
+
+    const refreshToken = await getRefreshToken();
+    const refreshed = refreshToken ? await refreshTokens(refreshToken) : null;
+    if (!refreshed) {
+      const response = await handler(undefined).catch(errorResponse);
+      clearAuthCookie(response);
+      return response;
+    }
+
+    try {
+      const response = await handler(refreshed.token);
+      setAuthCookie(response, refreshed);
+      return response;
+    } catch (retryError) {
+      return errorResponse(retryError);
+    }
+  }
+}
+
 export function searchParamsOf(request: NextRequest): URLSearchParams {
   return request.nextUrl.searchParams;
 }

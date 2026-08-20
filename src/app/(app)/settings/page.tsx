@@ -11,5 +11,5 @@ export default async function SettingsPage() {
       }))
     : { units: "metric" as const };
 
-  return <SettingsForm initialUnits={preferences.units} />;
+  return <SettingsForm initialUnits={preferences.units} isLoggedIn={Boolean(token)} />;
 }

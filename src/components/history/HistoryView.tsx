@@ -7,10 +7,12 @@ import { interpolate } from "@/i18n/interpolate";
 import { useTranslations } from "@/i18n/LocaleProvider";
 import { formatDateTime } from "@/lib/format";
 import { ApiError, clearHistory, deleteHistoryEntry } from "@/lib/api";
+import { SignInRequired } from "@/components/layout/SignInRequired";
 import type { SearchHistoryResponse } from "@/types/weather";
 
 type Props = {
   history: SearchHistoryResponse[];
+  isLoggedIn: boolean;
 };
 
 function TrashIcon() {
@@ -26,7 +28,7 @@ function TrashIcon() {
   );
 }
 
-export function HistoryView({ history: initialHistory }: Props) {
+export function HistoryView({ history: initialHistory, isLoggedIn }: Props) {
   const { dict, locale } = useTranslations();
   const [history, setHistory] = useState<SearchHistoryResponse[]>(initialHistory);
   const [removingId, setRemovingId] = useState<number | null>(null);
@@ -75,7 +77,8 @@ export function HistoryView({ history: initialHistory }: Props) {
           <p className="mt-1 text-sm text-text-muted">{dict.history.subtitle}</p>
         </div>
 
-        {history.length > 0 &&
+        {isLoggedIn &&
+          history.length > 0 &&
           (confirmingClearAll ? (
             <div className="flex shrink-0 items-center gap-2">
               <span className="text-xs text-text-muted">{dict.history.clearConfirmMessage}</span>
@@ -112,7 +115,9 @@ export function HistoryView({ history: initialHistory }: Props) {
         </p>
       )}
 
-      {history.length === 0 ? (
+      {!isLoggedIn ? (
+        <SignInRequired message={dict.signIn.requiredHistory} />
+      ) : history.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border p-8 text-center text-text-muted">
           {dict.history.empty}
         </p>

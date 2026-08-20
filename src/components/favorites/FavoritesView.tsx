@@ -9,13 +9,15 @@ import { translateApiError } from "@/i18n/errorMessage";
 import { interpolate } from "@/i18n/interpolate";
 import { useTranslations } from "@/i18n/LocaleProvider";
 import { ApiError, addFavorite, removeFavorite } from "@/lib/api";
+import { SignInRequired } from "@/components/layout/SignInRequired";
 import type { CitySuggestion, FavoriteResponse } from "@/types/weather";
 
 type Props = {
   initialFavorites: FavoriteResponse[];
+  isLoggedIn: boolean;
 };
 
-export function FavoritesView({ initialFavorites }: Props) {
+export function FavoritesView({ initialFavorites, isLoggedIn }: Props) {
   const { dict } = useTranslations();
   const [favorites, setFavorites] = useState<FavoriteResponse[]>(initialFavorites);
   const [city, setCity] = useState("");
@@ -88,6 +90,10 @@ export function FavoritesView({ initialFavorites }: Props) {
         <p className="mt-1 text-sm text-text-muted">{dict.favorites.subtitle}</p>
       </div>
 
+      {!isLoggedIn ? (
+        <SignInRequired message={dict.signIn.requiredFavorites} />
+      ) : (
+        <>
       <div ref={containerRef} className="relative max-w-md">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
@@ -153,6 +159,8 @@ export function FavoritesView({ initialFavorites }: Props) {
             ))}
           </AnimatePresence>
         </ul>
+      )}
+        </>
       )}
     </div>
   );

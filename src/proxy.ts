@@ -4,7 +4,10 @@ import { setAuthCookie } from "@/lib/auth-cookie";
 import { refreshTokens } from "@/lib/token-refresh";
 
 const PUBLIC_EXACT_PATHS = ["/"];
-const PUBLIC_PREFIX_PATHS = ["/login", "/register"];
+// Weather lookup (dashboard) and the three account-optional screens (favorites/history/settings
+// each render their own sign-in prompt client-side for a guest) all work without a token --
+// login/register are the only routes that must never see one.
+const PUBLIC_PREFIX_PATHS = ["/login", "/register", "/dashboard", "/favorites", "/history", "/settings"];
 const NEAR_EXPIRY_THRESHOLD_SECONDS = 5 * 60;
 
 /**

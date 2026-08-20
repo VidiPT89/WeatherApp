@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { translateApiError } from "@/i18n/errorMessage";
 import { useTranslations } from "@/i18n/LocaleProvider";
 import type { Locale } from "@/i18n/locale";
+import Link from "next/link";
 import { ApiError, updatePreferences } from "@/lib/api";
 import { useTheme } from "@/theme/ThemeProvider";
 import type { Theme } from "@/theme/theme";
@@ -12,9 +13,10 @@ import type { Units } from "@/types/weather";
 
 type Props = {
   initialUnits: Units;
+  isLoggedIn: boolean;
 };
 
-export function SettingsForm({ initialUnits }: Props) {
+export function SettingsForm({ initialUnits, isLoggedIn }: Props) {
   const { dict, locale, setLocale } = useTranslations();
   const { theme, setTheme } = useTheme();
   const [units, setUnits] = useState<Units>(initialUnits);
@@ -49,30 +51,48 @@ export function SettingsForm({ initialUnits }: Props) {
         <p className="mt-1 text-sm text-text-muted">{dict.settings.subtitle}</p>
       </div>
 
-      <div className="flex gap-1 rounded-lg bg-surface-muted p-1 text-sm" role="group" aria-label={dict.settings.title}>
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={() => handleSelect("metric")}
-          className={`flex-1 rounded-md px-3 py-2 transition ${
-            units === "metric" ? "bg-accent text-accent-foreground" : "text-text-muted"
-          }`}
-        >
-          {dict.settings.metric}
-        </button>
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={() => handleSelect("imperial")}
-          className={`flex-1 rounded-md px-3 py-2 transition ${
-            units === "imperial" ? "bg-accent text-accent-foreground" : "text-text-muted"
-          }`}
-        >
-          {dict.settings.imperial}
-        </button>
-      </div>
+      {isLoggedIn ? (
+        <>
+          <div
+            className="flex gap-1 rounded-lg bg-surface-muted p-1 text-sm"
+            role="group"
+            aria-label={dict.settings.title}
+          >
+            <button
+              type="button"
+              disabled={isSaving}
+              onClick={() => handleSelect("metric")}
+              className={`flex-1 rounded-md px-3 py-2 transition ${
+                units === "metric" ? "bg-accent text-accent-foreground" : "text-text-muted"
+              }`}
+            >
+              {dict.settings.metric}
+            </button>
+            <button
+              type="button"
+              disabled={isSaving}
+              onClick={() => handleSelect("imperial")}
+              className={`flex-1 rounded-md px-3 py-2 transition ${
+                units === "imperial" ? "bg-accent text-accent-foreground" : "text-text-muted"
+              }`}
+            >
+              {dict.settings.imperial}
+            </button>
+          </div>
 
-      {feedback && <p className="text-sm text-text-muted">{feedback}</p>}
+          {feedback && <p className="text-sm text-text-muted">{feedback}</p>}
+        </>
+      ) : (
+        <div className="flex flex-col items-start gap-3 rounded-lg border border-dashed border-border p-4">
+          <p className="text-sm text-text-muted">{dict.signIn.requiredSettings}</p>
+          <Link
+            href="/login"
+            className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition hover:opacity-90"
+          >
+            {dict.signIn.action}
+          </Link>
+        </div>
+      )}
 
       <div>
         <h2 className="text-sm font-medium uppercase tracking-wide text-text-muted">{dict.settings.languageTitle}</h2>

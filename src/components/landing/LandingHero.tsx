@@ -77,6 +77,12 @@ export function LandingHero() {
             >
               {dict.landing.ctaSecondary}
             </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-full px-6 py-3 font-medium text-text-muted underline-offset-4 transition hover:text-text hover:underline"
+            >
+              {dict.landing.ctaTertiary}
+            </Link>
           </motion.div>
 
           <motion.dl

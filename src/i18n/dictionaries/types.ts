@@ -6,6 +6,7 @@ export interface Dictionary {
     heroSubtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
+    ctaTertiary: string;
     statForecastValue: string;
     statForecastLabel: string;
     statProvidersValue: string;
@@ -42,6 +43,7 @@ export interface Dictionary {
     settings: string;
     admin: string;
     logout: string;
+    login: string;
   };
   search: {
     placeholder: string;
@@ -50,6 +52,12 @@ export interface Dictionary {
   };
   unitToggle: {
     ariaLabel: string;
+  };
+  signIn: {
+    requiredFavorites: string;
+    requiredHistory: string;
+    requiredSettings: string;
+    action: string;
   };
   dashboard: {
     idlePrompt: string;

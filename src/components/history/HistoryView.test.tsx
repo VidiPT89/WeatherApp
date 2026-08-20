@@ -29,7 +29,7 @@ describe("HistoryView", () => {
 
   it("removes a history entry when the delete button is clicked", async () => {
     deleteHistoryEntryMock.mockResolvedValue(undefined);
-    render(<HistoryView history={[buildEntry(1, "Lisboa"), buildEntry(2, "Porto")]} />);
+    render(<HistoryView history={[buildEntry(1, "Lisboa"), buildEntry(2, "Porto")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: /Remover Lisboa/i }));
 
@@ -40,7 +40,7 @@ describe("HistoryView", () => {
 
   it("shows an error message and keeps the entry when removing fails", async () => {
     deleteHistoryEntryMock.mockRejectedValue(new ApiError(500, "boom"));
-    render(<HistoryView history={[buildEntry(1, "Lisboa")]} />);
+    render(<HistoryView history={[buildEntry(1, "Lisboa")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: /Remover Lisboa/i }));
 
@@ -52,7 +52,7 @@ describe("HistoryView", () => {
     deleteHistoryEntryMock.mockRejectedValue(
       new ApiError(404, "Search history entry not found: '1'", "SEARCH_HISTORY_ENTRY_NOT_FOUND"),
     );
-    render(<HistoryView history={[buildEntry(1, "Lisboa")]} />);
+    render(<HistoryView history={[buildEntry(1, "Lisboa")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: /Remover Lisboa/i }));
 
@@ -62,7 +62,7 @@ describe("HistoryView", () => {
 
   it("clears the entire history after confirming", async () => {
     clearHistoryMock.mockResolvedValue(undefined);
-    render(<HistoryView history={[buildEntry(1, "Lisboa"), buildEntry(2, "Porto")]} />);
+    render(<HistoryView history={[buildEntry(1, "Lisboa"), buildEntry(2, "Porto")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: "Limpar tudo" }));
     fireEvent.click(screen.getByRole("button", { name: "Limpar histórico" }));
@@ -73,7 +73,7 @@ describe("HistoryView", () => {
   });
 
   it("cancelling the clear-all confirmation keeps the history", () => {
-    render(<HistoryView history={[buildEntry(1, "Lisboa")]} />);
+    render(<HistoryView history={[buildEntry(1, "Lisboa")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: "Limpar tudo" }));
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
@@ -84,7 +84,7 @@ describe("HistoryView", () => {
 
   it("shows an error message and keeps the history when clearing all fails", async () => {
     clearHistoryMock.mockRejectedValue(new ApiError(500, "boom"));
-    render(<HistoryView history={[buildEntry(1, "Lisboa")]} />);
+    render(<HistoryView history={[buildEntry(1, "Lisboa")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: "Limpar tudo" }));
     fireEvent.click(screen.getByRole("button", { name: "Limpar histórico" }));
@@ -94,7 +94,7 @@ describe("HistoryView", () => {
   });
 
   it("does not show the clear-all button when there is no history", () => {
-    render(<HistoryView history={[]} />);
+    render(<HistoryView history={[]} isLoggedIn />);
 
     expect(screen.getByText("Ainda não pesquisaste nenhuma cidade.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Limpar tudo" })).not.toBeInTheDocument();

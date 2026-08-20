@@ -35,7 +35,7 @@ describe("FavoritesView", () => {
 
   it("removes a favorite when the remove button is clicked", async () => {
     removeFavoriteMock.mockResolvedValue(undefined);
-    render(<FavoritesView initialFavorites={[buildFavorite("Lisboa"), buildFavorite("Porto")]} />);
+    render(<FavoritesView initialFavorites={[buildFavorite("Lisboa"), buildFavorite("Porto")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: /Remover Lisboa/i }));
 
@@ -46,7 +46,7 @@ describe("FavoritesView", () => {
 
   it("shows an error message and keeps the card when removing fails", async () => {
     removeFavoriteMock.mockRejectedValue(new ApiError(500, "boom"));
-    render(<FavoritesView initialFavorites={[buildFavorite("Lisboa")]} />);
+    render(<FavoritesView initialFavorites={[buildFavorite("Lisboa")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: /Remover Lisboa/i }));
 
@@ -56,7 +56,7 @@ describe("FavoritesView", () => {
 
   it("removes the card without an error banner when the backend already considers it gone", async () => {
     removeFavoriteMock.mockRejectedValue(new ApiError(404, "City is not a favorite: 'Lisboa'", "FAVORITE_NOT_FOUND"));
-    render(<FavoritesView initialFavorites={[buildFavorite("Lisboa")]} />);
+    render(<FavoritesView initialFavorites={[buildFavorite("Lisboa")]} isLoggedIn />);
 
     fireEvent.click(screen.getByRole("button", { name: /Remover Lisboa/i }));
 
@@ -70,7 +70,7 @@ describe("FavoritesView", () => {
       results: [buildSuggestion("Lisboa", "PT"), buildSuggestion("Lisburn", "GB")],
     });
     addFavoriteMock.mockResolvedValue(buildFavorite("Lisboa"));
-    render(<FavoritesView initialFavorites={[]} />);
+    render(<FavoritesView initialFavorites={[]} isLoggedIn />);
 
     fireEvent.change(screen.getByLabelText("Nome da cidade"), { target: { value: "Lis" } });
 
@@ -87,7 +87,7 @@ describe("FavoritesView", () => {
 
   it("does not add a free-typed city that was never confirmed as a real geocoded suggestion", async () => {
     searchCitiesMock.mockResolvedValue({ query: "Nowhereville", results: [] });
-    render(<FavoritesView initialFavorites={[]} />);
+    render(<FavoritesView initialFavorites={[]} isLoggedIn />);
 
     const input = screen.getByLabelText("Nome da cidade");
     fireEvent.change(input, { target: { value: "Nowhereville" } });
