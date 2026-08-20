@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { translateWeatherDescription } from "@/i18n/weatherDescription";
 import { useTranslations } from "@/i18n/LocaleProvider";
+import { fetchWeatherNearby } from "@/lib/api";
+import type { WeatherResponse } from "@/types/weather";
 
 const CARD_ENTRANCE = { duration: 0.6, ease: "easeOut" as const };
 
@@ -115,11 +119,42 @@ export function LandingHero() {
 
 function HeroPreviewCard() {
   const { dict, locale } = useTranslations();
+  const [nearby, setNearby] = useState<WeatherResponse | null>(null);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return;
+
+    let isCancelled = false;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        fetchWeatherNearby(position.coords.latitude, position.coords.longitude, "metric")
+          .then((result) => {
+            if (!isCancelled) setNearby(result);
+          })
+          .catch(() => {
+            /* Reverse geocoding or the lookup failed -- the static demo card stays in place. */
+          });
+      },
+      () => {
+        /* Permission denied or unavailable -- the static demo card stays in place. */
+      },
+      { timeout: 10_000, maximumAge: 5 * 60 * 1000 },
+    );
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
   const hours =
     locale === "pt"
       ? ["Agora", "15h", "16h", "17h", "18h"]
       : ["Now", "3pm", "4pm", "5pm", "6pm"];
   const bars = [62, 74, 88, 96, 70];
+
+  const location = nearby ? `${nearby.city}, ${nearby.country}` : "Lisboa, Portugal";
+  const temperature = nearby ? Math.round(nearby.temperature) : 22;
+  const description = nearby ? translateWeatherDescription(nearby.description, locale) : dict.landing.demoDescription;
 
   return (
     <div className="relative mx-auto max-w-sm">
@@ -137,13 +172,13 @@ function HeroPreviewCard() {
       <div className="relative z-10 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-sky-400 to-blue-500 shadow-2xl">
         <div className="bg-surface/10 p-6 backdrop-blur-sm">
           <div className="flex items-center justify-between text-white/90">
-            <span className="text-sm font-medium uppercase tracking-wide">Lisboa, Portugal</span>
+            <span className="text-sm font-medium uppercase tracking-wide">{location}</span>
             <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold">
               {dict.weatherCard.freshData}
             </span>
           </div>
-          <p className="mt-3 text-5xl font-semibold text-white">22°C</p>
-          <p className="text-white/80">{locale === "pt" ? "Céu limpo" : "Clear sky"}</p>
+          <p className="mt-3 text-5xl font-semibold text-white">{temperature}°C</p>
+          <p className="text-white/80">{description}</p>
 
           <div className="mt-6 flex items-end gap-2">
             {bars.map((height, index) => (

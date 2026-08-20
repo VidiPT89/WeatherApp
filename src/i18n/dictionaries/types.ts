@@ -33,6 +33,7 @@ export interface Dictionary {
     ctaSectionTitle: string;
     ctaSectionSubtitle: string;
     footerTagline: string;
+    demoDescription: string;
   };
   nav: {
     appName: string;
