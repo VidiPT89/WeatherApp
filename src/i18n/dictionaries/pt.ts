@@ -39,6 +39,7 @@ const pt: Dictionary = {
     ctaSectionTitle: "Pronto para consultar o tempo como deve ser?",
     ctaSectionSubtitle: "Cria uma conta em segundos — sem cartão de crédito, sem anúncios.",
     footerTagline: "Um cliente da Weather API, feito com Next.js.",
+    demoDescription: "Céu limpo",
   },
   nav: {
     appName: "WeatherApp",
