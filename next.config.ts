@@ -13,7 +13,7 @@ const CSP = [
   // needs eval(); it never runs in production, so production ships without it.
   // Social login SDKs (loaded as plain <script> tags, no npm deps -- see src/lib/social-auth.ts):
   // Google Identity Services, Apple's Sign in with Apple JS, and Microsoft's MSAL browser bundle.
-  `script-src 'self' 'unsafe-inline' https://accounts.google.com https://appleid.cdn-apple.com https://alcdn.msauth.net${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://accounts.google.com https://appleid.cdn-apple.com https://cdn.jsdelivr.net${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",

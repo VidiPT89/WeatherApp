@@ -96,7 +96,10 @@ export function signInWithApple(clientId: string, redirectUri: string): Promise<
 
 export function signInWithMicrosoft(clientId: string): Promise<string> {
   return withTimeout(
-    loadScript("https://alcdn.msauth.net/browser/3.x/js/msal-browser.min.js").then(async () => {
+    // Microsoft's own CDN (alcdn.msauth.net) 404s on the documented "3.x" alias path as of this
+    // writing -- jsDelivr mirrors the same npm package (@azure/msal-browser) and exposes the
+    // identical UMD build (same global `msal`), so it's a drop-in swap.
+    loadScript("https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js").then(async () => {
       const app = new window.msal!.PublicClientApplication({
         auth: { clientId, authority: "https://login.microsoftonline.com/common" },
       });
