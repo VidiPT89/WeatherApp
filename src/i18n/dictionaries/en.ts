@@ -211,6 +211,9 @@ const en: Dictionary = {
     hasAccount: "Already have an account?",
     signIn: "Sign in",
     genericError: "Could not complete the request.",
+    orContinueWith: "or continue with",
+    continueWith: "Continue with",
+    socialError: "Couldn't complete sign-in. Please try again.",
   },
   errors: {
     CITY_NOT_FOUND: "We couldn't find that city.",

@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { translateApiError } from "@/i18n/errorMessage";
 import { useTranslations } from "@/i18n/LocaleProvider";
 import { ApiError, login, register } from "@/lib/api";
+import { SocialLoginButtons } from "@/components/auth/SocialLoginButtons";
 
 type Mode = "login" | "register";
 
@@ -28,6 +29,11 @@ export function AuthForm({ mode }: Props) {
       ? { title: dict.auth.loginTitle, subtitle: dict.auth.loginSubtitle, submitLabel: dict.auth.loginSubmit }
       : { title: dict.auth.registerTitle, subtitle: dict.auth.registerSubtitle, submitLabel: dict.auth.registerSubmit };
 
+  function handleAuthenticated() {
+    router.push("/dashboard");
+    router.refresh();
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
@@ -39,8 +45,7 @@ export function AuthForm({ mode }: Props) {
       } else {
         await register(email, password);
       }
-      router.push("/dashboard");
-      router.refresh();
+      handleAuthenticated();
     } catch (error) {
       setErrorMessage(error instanceof ApiError ? translateApiError(dict, error, dict.auth.genericError) : dict.auth.genericError);
     } finally {
@@ -99,6 +104,8 @@ export function AuthForm({ mode }: Props) {
       >
         {isSubmitting ? dict.auth.processing : copy.submitLabel}
       </button>
+
+      <SocialLoginButtons onSuccess={handleAuthenticated} />
 
       <p className="text-center text-sm text-text-muted">
         {mode === "login" ? (

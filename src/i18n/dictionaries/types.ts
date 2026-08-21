@@ -205,6 +205,9 @@ export interface Dictionary {
     hasAccount: string;
     signIn: string;
     genericError: string;
+    orContinueWith: string;
+    continueWith: string;
+    socialError: string;
   };
   errors: {
     CITY_NOT_FOUND: string;

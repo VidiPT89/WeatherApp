@@ -11,11 +11,14 @@ const CSP = [
   // interactive. Every other directive below stays strict.
   // 'unsafe-eval' is added in dev only -- React's dev-mode debugging (stack trace reconstruction)
   // needs eval(); it never runs in production, so production ships without it.
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  // Social login SDKs (loaded as plain <script> tags, no npm deps -- see src/lib/social-auth.ts):
+  // Google Identity Services, Apple's Sign in with Apple JS, and Microsoft's MSAL browser bundle.
+  `script-src 'self' 'unsafe-inline' https://accounts.google.com https://appleid.cdn-apple.com https://alcdn.msauth.net${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://accounts.google.com https://appleid.apple.com https://login.microsoftonline.com",
+  "frame-src 'self' https://accounts.google.com https://appleid.apple.com https://login.microsoftonline.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
