@@ -25,7 +25,7 @@ declare global {
     };
     msal?: {
       PublicClientApplication: new (config: {
-        auth: { clientId: string; authority: string };
+        auth: { clientId: string; authority: string; redirectUri: string };
       }) => {
         initialize: () => Promise<void>;
         loginPopup: (request: { scopes: string[] }) => Promise<{ idToken: string }>;
@@ -101,7 +101,14 @@ export function signInWithMicrosoft(clientId: string): Promise<string> {
     // identical UMD build (same global `msal`), so it's a drop-in swap.
     loadScript("https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js").then(async () => {
       const app = new window.msal!.PublicClientApplication({
-        auth: { clientId, authority: "https://login.microsoftonline.com/common" },
+        // Explicit redirectUri, not MSAL's default of `window.location.href` -- Azure's app
+        // registration has the bare origin registered (not the /login or /register path this
+        // runs from), and MSAL rejects any mismatch as "invalid_request: redirect_uri".
+        auth: {
+          clientId,
+          authority: "https://login.microsoftonline.com/common",
+          redirectUri: window.location.origin,
+        },
       });
       await app.initialize();
       const result = await app.loginPopup({ scopes: ["openid", "email", "profile"] });
