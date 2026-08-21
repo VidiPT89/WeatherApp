@@ -143,3 +143,9 @@ export function register(email: string, password: string) {
 export function logout() {
   return send<{ ok: boolean }>("/api/auth/logout", "POST", {});
 }
+
+export type OAuthProvider = "google" | "apple" | "microsoft";
+
+export function oauthLogin(provider: OAuthProvider, idToken: string) {
+  return send<{ ok: boolean }>(`/api/auth/oauth/${provider}`, "POST", { idToken });
+}

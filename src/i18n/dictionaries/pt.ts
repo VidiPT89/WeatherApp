@@ -211,6 +211,9 @@ const pt: Dictionary = {
     hasAccount: "Já tens conta?",
     signIn: "Entra",
     genericError: "Não foi possível concluir o pedido.",
+    orContinueWith: "ou continua com",
+    continueWith: "Continuar com",
+    socialError: "Não foi possível concluir o login. Tenta novamente.",
   },
   errors: {
     CITY_NOT_FOUND: "Não encontrámos essa cidade.",
