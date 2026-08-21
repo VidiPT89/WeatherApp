@@ -32,6 +32,11 @@ const SECURITY_HEADERS = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
+  // Chrome's default cross-origin popup isolation stops MSAL from reading `popup.closed` (it
+  // polls that to detect the Microsoft login popup finishing), which without this header hangs
+  // "Continuar com Microsoft" until our own 60s timeout -- confirmed via the exact console error
+  // MSAL throws: "Cross-Origin-Opener-Policy policy would block the window.closed call."
+  { key: "Cross-Origin-Opener-Policy", value: "unsafe-none" },
 ];
 
 const nextConfig: NextConfig = {
