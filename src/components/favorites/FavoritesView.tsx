@@ -56,12 +56,15 @@ export function FavoritesView({ initialFavorites, isLoggedIn }: Props) {
     if (!matched) return;
 
     close();
-    void addCity(matched.name);
+    // Includes the country so same-named cities elsewhere (e.g. Beja, Portugal vs. Beja,
+    // Tunisia) resolve to the one actually matched instead of the backend's own top geocoding
+    // match for the bare name.
+    void addCity(`${matched.name}, ${matched.country}`);
   }
 
   function handleSelectSuggestion(suggestion: CitySuggestion) {
     close();
-    void addCity(suggestion.name);
+    void addCity(`${suggestion.name}, ${suggestion.country}`);
   }
 
   async function handleRemove(favoriteCity: string) {

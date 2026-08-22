@@ -25,9 +25,13 @@ export function SearchBar({ onSelectCity, isSearching }: Props) {
   }
 
   function handleSelectSuggestion(suggestion: CitySuggestion) {
-    setQuery(suggestion.name);
+    // Includes the country so same-named cities elsewhere (e.g. Beja, Portugal vs. Beja,
+    // Tunisia) resolve to the one actually picked instead of the backend's own top geocoding
+    // match for the bare name.
+    const cityLabel = `${suggestion.name}, ${suggestion.country}`;
+    setQuery(cityLabel);
     close();
-    onSelectCity(suggestion.name);
+    onSelectCity(cityLabel);
   }
 
   return (
