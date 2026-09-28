@@ -79,7 +79,7 @@ describe("FavoritesView", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Lisboa/i }));
 
-    await waitFor(() => expect(addFavoriteMock).toHaveBeenCalledWith("Lisboa"));
+    await waitFor(() => expect(addFavoriteMock).toHaveBeenCalledWith("Lisboa, PT"));
     expect(await screen.findByText("Lisboa")).toBeInTheDocument();
     // Selecting the suggestion closes the dropdown -- "Lisburn" should no longer be listed.
     expect(screen.queryByText("Lisburn")).not.toBeInTheDocument();
