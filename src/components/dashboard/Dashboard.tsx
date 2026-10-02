@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { SearchBar } from "@/components/search/SearchBar";
@@ -42,28 +42,44 @@ export function Dashboard() {
   const [state, setState] = useState<LoadState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  const [forecastError, setForecastError] = useState<string | null>(null);
+  const requestSequence = useRef(0);
 
   const loadCity = useCallback(
-    async (targetCity: string, targetUnits: Units) => {
+    async (targetCity: string, targetUnits: Units, nearbyWeather?: WeatherResponse) => {
+      const request = ++requestSequence.current;
+      const isCurrent = () => request === requestSequence.current;
+      setIsLocating(false);
       setState("loading");
       setErrorMessage(null);
+      setForecastError(null);
+      setWeather(null);
+      setForecast(null);
+      setMarine(null);
+      setInsights(null);
+
+      // Sections settle independently: slow or unavailable extras must not hide current weather.
+      void fetchForecast(targetCity, targetUnits).then((result) => {
+        if (isCurrent()) setForecast(result);
+      }).catch((error: unknown) => {
+        if (isCurrent()) setForecastError(
+          error instanceof ApiError ? translateApiError(dict, error) : dict.errors.WEATHER_LOAD_FAILED,
+        );
+      });
+      void fetchMarine(targetCity, targetUnits).then((result) => {
+        if (isCurrent()) setMarine(result);
+      }).catch(() => {});
+      void fetchInsights(targetCity, targetUnits).then((result) => {
+        if (isCurrent()) setInsights(result);
+      }).catch(() => {});
+
       try {
-        const [weatherResult, forecastResult, marineResult, insightsResult] = await Promise.all([
-          fetchWeather(targetCity, targetUnits),
-          fetchForecast(targetCity, targetUnits),
-          fetchMarine(targetCity, targetUnits).catch(() => null),
-          fetchInsights(targetCity, targetUnits).catch(() => null),
-        ]);
-        setWeather(weatherResult);
-        setForecast(forecastResult);
-        setMarine(marineResult);
-        setInsights(insightsResult);
+        const result = nearbyWeather ?? await fetchWeather(targetCity, targetUnits);
+        if (!isCurrent()) return;
+        setWeather(result);
         setState("success");
       } catch (error) {
-        setWeather(null);
-        setForecast(null);
-        setMarine(null);
-        setInsights(null);
+        if (!isCurrent()) return;
         setState("error");
         setErrorMessage(
           error instanceof ApiError ? translateApiError(dict, error) : dict.errors.WEATHER_LOAD_FAILED,
@@ -75,12 +91,16 @@ export function Dashboard() {
 
   const loadNearby = useCallback(
     async (latitude: number, longitude: number, targetUnits: Units) => {
+      const request = ++requestSequence.current;
+      setState("loading");
       try {
-        const weatherResult = await fetchWeatherNearby(latitude, longitude, targetUnits);
-        setCity(weatherResult.city);
-        await loadCity(weatherResult.city, targetUnits);
+        const result = await fetchWeatherNearby(latitude, longitude, targetUnits);
+        if (request !== requestSequence.current) return;
+        const qualifiedCity = result.country ? `${result.city}, ${result.country}` : result.city;
+        setCity(qualifiedCity);
+        await loadCity(qualifiedCity, targetUnits, result);
       } catch {
-        /* Reverse geocoding or the lookup failed -- fall back to the manual-search idle state. */
+        if (request === requestSequence.current) setState("idle");
       }
     },
     [loadCity],
@@ -88,20 +108,24 @@ export function Dashboard() {
 
   useEffect(() => {
     let isCancelled = false;
+    const sequence = requestSequence;
+    const initialRequest = sequence.current;
+    const isCurrent = () => !isCancelled && initialRequest === requestSequence.current;
 
     async function init() {
       let resolvedUnits: Units = "metric";
       try {
         const preferences = await fetchPreferences();
         resolvedUnits = preferences.units;
-        if (!isCancelled) setUnits(resolvedUnits);
+        if (isCurrent()) setUnits(resolvedUnits);
       } catch {
         /* preferences are optional context; the metric default already set stays in place */
       }
 
+      if (!isCurrent()) return;
       const initialCity = searchParams.get("city");
       if (initialCity) {
-        if (!isCancelled) {
+        if (isCurrent()) {
           setCity(initialCity);
           void loadCity(initialCity, resolvedUnits);
         }
@@ -113,12 +137,12 @@ export function Dashboard() {
       setIsLocating(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          if (isCancelled) return;
+          if (!isCurrent()) return;
           setIsLocating(false);
           void loadNearby(position.coords.latitude, position.coords.longitude, resolvedUnits);
         },
         () => {
-          if (isCancelled) return;
+          if (!isCurrent()) return;
           setIsLocating(false);
         },
         // A weather lookup only needs city-level precision, so a position the browser already
@@ -132,6 +156,7 @@ export function Dashboard() {
     void init();
     return () => {
       isCancelled = true;
+      sequence.current++;
     };
   }, [searchParams, loadCity, loadNearby]);
 
@@ -141,8 +166,11 @@ export function Dashboard() {
   }
 
   function handleUnitsChange(nextUnits: Units) {
+    requestSequence.current++;
+    setIsLocating(false);
     setUnits(nextUnits);
     if (city) void loadCity(city, nextUnits);
+    else setState("idle");
   }
 
   return (
@@ -202,11 +230,12 @@ export function Dashboard() {
           </motion.p>
         )}
 
-        {state === "success" && weather && forecast && (
+        {state === "success" && weather && (
           <motion.div key="success" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col gap-6">
             <div className="grid gap-6 lg:grid-cols-2">
-              <WeatherCard weather={weather} today={forecast.daily[0]} />
-              <ForecastChart hourly={forecast.hourly} daily={forecast.daily} units={units} />
+              <WeatherCard weather={weather} today={forecast?.daily[0]} />
+              {forecast && <ForecastChart hourly={forecast.hourly} daily={forecast.daily} units={weather.units} />}
+              {forecastError && <p role="status" className="p-6 text-text-muted">{forecastError}</p>}
             </div>
             {marine && <MarineConditionsCard marine={marine} />}
             {insights && <WeatherInsightsCard insights={insights} />}
