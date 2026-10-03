@@ -232,6 +232,7 @@ const en: Dictionary = {
     WEATHER_LOAD_FAILED: "Could not load the weather.",
     ADMIN_SELF_DELETE: "You can't delete your own admin account.",
     SEARCH_HISTORY_ENTRY_NOT_FOUND: "This entry is no longer in your history.",
+    SERVICE_UNAVAILABLE: "Couldn't reach the server. You're still signed in, so please try again in a moment.",
   },
 };
 

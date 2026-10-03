@@ -76,10 +76,8 @@ describe("proxy middleware", () => {
   it("proactively refreshes and sets new cookies when the token is near expiry", async () => {
     const token = buildToken(60);
     vi.mocked(refreshTokens).mockResolvedValue({
-      token: "new-access-token",
-      tokenType: "Bearer",
-      expiresInSeconds: 3600,
-      refreshToken: "new-refresh-token",
+      status: "refreshed",
+      auth: { token: "new-access-token", tokenType: "Bearer", expiresInSeconds: 3600, refreshToken: "new-refresh-token" },
     });
 
     const response = await proxy(
@@ -93,7 +91,7 @@ describe("proxy middleware", () => {
 
   it("falls through to a plain response when the refresh attempt fails", async () => {
     const token = buildToken(60);
-    vi.mocked(refreshTokens).mockResolvedValue(null);
+    vi.mocked(refreshTokens).mockResolvedValue({ status: "rejected" });
 
     const response = await proxy(
       buildRequest("/admin", { [AUTH_COOKIE_NAME]: token, [REFRESH_COOKIE_NAME]: "revoked-refresh-token" }),

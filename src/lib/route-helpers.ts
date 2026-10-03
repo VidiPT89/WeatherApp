@@ -13,6 +13,17 @@ export function errorResponse(error: unknown): NextResponse {
 }
 
 /**
+ * The refresh call couldn't reach the backend: the session may still be valid, so the cookies
+ * stay and the client gets a retryable error instead of `UNAUTHENTICATED` (which logs it out).
+ */
+function sessionKeptResponse(): NextResponse {
+  return NextResponse.json(
+    { message: "The server could not be reached. Please try again.", errorCode: "SERVICE_UNAVAILABLE" },
+    { status: 503 }
+  );
+}
+
+/**
  * Runs `handler` with the current access token. If the backend rejects it as expired
  * (`UNAUTHENTICATED`), transparently refreshes once and retries before giving up — this is the
  * safety net for `/api/*` calls, which `proxy.ts`'s proactive refresh never reaches (its matcher
@@ -34,16 +45,19 @@ export async function withAuth(
     }
 
     const refreshToken = await getRefreshToken();
-    const refreshed = refreshToken ? await refreshTokens(refreshToken) : null;
-    if (!refreshed) {
+    const refreshed = refreshToken ? await refreshTokens(refreshToken) : { status: "rejected" as const };
+    if (refreshed.status === "unavailable") {
+      return sessionKeptResponse();
+    }
+    if (refreshed.status === "rejected") {
       const response = errorResponse(error);
       clearAuthCookie(response);
       return response;
     }
 
     try {
-      const response = await handler(refreshed.token);
-      setAuthCookie(response, refreshed);
+      const response = await handler(refreshed.auth.token);
+      setAuthCookie(response, refreshed.auth);
       return response;
     } catch (retryError) {
       return errorResponse(retryError);
@@ -77,16 +91,17 @@ export async function withOptionalAuth(
     }
 
     const refreshToken = await getRefreshToken();
-    const refreshed = refreshToken ? await refreshTokens(refreshToken) : null;
-    if (!refreshed) {
+    const refreshed = refreshToken ? await refreshTokens(refreshToken) : { status: "rejected" as const };
+    if (refreshed.status !== "refreshed") {
+      // Still answer anonymously, but only drop the session when it's really over.
       const response = await handler(undefined).catch(errorResponse);
-      clearAuthCookie(response);
+      if (refreshed.status === "rejected") clearAuthCookie(response);
       return response;
     }
 
     try {
-      const response = await handler(refreshed.token);
-      setAuthCookie(response, refreshed);
+      const response = await handler(refreshed.auth.token);
+      setAuthCookie(response, refreshed.auth);
       return response;
     } catch (retryError) {
       return errorResponse(retryError);
