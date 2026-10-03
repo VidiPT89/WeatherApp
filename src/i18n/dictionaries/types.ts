@@ -226,6 +226,7 @@ export interface Dictionary {
     WEATHER_LOAD_FAILED: string;
     ADMIN_SELF_DELETE: string;
     SEARCH_HISTORY_ENTRY_NOT_FOUND: string;
+    SERVICE_UNAVAILABLE: string;
   };
 }
 

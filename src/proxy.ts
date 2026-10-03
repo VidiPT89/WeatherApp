@@ -50,10 +50,10 @@ export async function proxy(request: NextRequest) {
 
   if (isNearExpiry && refreshToken) {
     const refreshed = await refreshTokens(refreshToken);
-    if (refreshed) {
-      request.cookies.set(AUTH_COOKIE_NAME, refreshed.token);
+    if (refreshed.status === "refreshed") {
+      request.cookies.set(AUTH_COOKIE_NAME, refreshed.auth.token);
       const response = NextResponse.next({ request });
-      setAuthCookie(response, refreshed);
+      setAuthCookie(response, refreshed.auth);
       return response;
     }
   }

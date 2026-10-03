@@ -232,6 +232,7 @@ const pt: Dictionary = {
     WEATHER_LOAD_FAILED: "Não foi possível obter o tempo.",
     ADMIN_SELF_DELETE: "Não podes eliminar a tua própria conta de administrador.",
     SEARCH_HISTORY_ENTRY_NOT_FOUND: "Esta entrada já não está no teu histórico.",
+    SERVICE_UNAVAILABLE: "Não foi possível contactar o servidor. A tua sessão continua ativa, tenta novamente daqui a pouco.",
   },
 };
 

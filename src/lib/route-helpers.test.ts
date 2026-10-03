@@ -54,10 +54,8 @@ describe("withAuth", () => {
     vi.mocked(getToken).mockResolvedValue("expired-token");
     vi.mocked(getRefreshToken).mockResolvedValue("valid-refresh-token");
     vi.mocked(refreshTokens).mockResolvedValue({
-      token: "new-token",
-      tokenType: "Bearer",
-      expiresInSeconds: 3600,
-      refreshToken: "new-refresh-token",
+      status: "refreshed",
+      auth: { token: "new-token", tokenType: "Bearer", expiresInSeconds: 3600, refreshToken: "new-refresh-token" },
     });
     const handler = vi
       .fn()
@@ -86,12 +84,25 @@ describe("withAuth", () => {
   it("returns 401 and clears cookies when the refresh token itself is invalid", async () => {
     vi.mocked(getToken).mockResolvedValue("expired-token");
     vi.mocked(getRefreshToken).mockResolvedValue("revoked-refresh-token");
-    vi.mocked(refreshTokens).mockResolvedValue(null);
+    vi.mocked(refreshTokens).mockResolvedValue({ status: "rejected" });
     const handler = vi.fn().mockRejectedValue(new BackendApiError(401, "Session expired", "UNAUTHENTICATED"));
 
     const response = await withAuth(handler);
 
     expect(response.status).toBe(401);
     expect(response.cookies.get("weather_app_token")?.value).toBe("");
+  });
+
+  it("keeps the session and returns a retryable error when the refresh call can't reach the backend", async () => {
+    vi.mocked(getToken).mockResolvedValue("expired-token");
+    vi.mocked(getRefreshToken).mockResolvedValue("valid-refresh-token");
+    vi.mocked(refreshTokens).mockResolvedValue({ status: "unavailable" });
+    const handler = vi.fn().mockRejectedValue(new BackendApiError(401, "Session expired", "UNAUTHENTICATED"));
+
+    const response = await withAuth(handler);
+
+    expect(response.status).toBe(503);
+    expect((await response.json()).errorCode).toBe("SERVICE_UNAVAILABLE");
+    expect(response.cookies.get("weather_app_token")).toBeUndefined();
   });
 });

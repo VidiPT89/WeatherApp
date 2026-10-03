@@ -20,10 +20,10 @@ describe("refreshTokens", () => {
 
     const result = await refreshTokens("old-refresh-token");
 
-    expect(result).toEqual(auth);
+    expect(result).toEqual({ status: "refreshed", auth });
   });
 
-  it("returns null instead of throwing when the backend rejects the refresh token", async () => {
+  it("reports a rejection instead of throwing when the backend refuses the refresh token", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(jsonResponse({ message: "Invalid or expired refresh token", errorCode: "INVALID_REFRESH_TOKEN" }, 401))
@@ -31,14 +31,22 @@ describe("refreshTokens", () => {
 
     const result = await refreshTokens("expired-refresh-token");
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ status: "rejected" });
   });
 
-  it("returns null instead of throwing on a network error", async () => {
+  it("reports the backend as unavailable instead of throwing on a network error", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network down")));
 
     const result = await refreshTokens("any-token");
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ status: "unavailable" });
+  });
+
+  it("reports the backend as unavailable, not a rejection, on a server error", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ message: "Bad gateway" }, 502)));
+
+    const result = await refreshTokens("valid-refresh-token");
+
+    expect(result).toEqual({ status: "unavailable" });
   });
 });
