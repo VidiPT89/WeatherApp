@@ -139,4 +139,5 @@ export interface ApiErrorBody {
   errorCode?: string;
 }
 
-export const PRIMARY_PROVIDER = "open-meteo";
+// Must match the API: WeatherAggregatorService tries OpenWeatherMapProvider (@Order(1)) first.
+export const PRIMARY_PROVIDER = "open-weather-map";
