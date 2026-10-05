@@ -4,12 +4,12 @@ import { FallbackBanner } from "@/components/weather/FallbackBanner";
 
 describe("FallbackBanner", () => {
   it("renders nothing when the primary provider served the response", () => {
-    const { container } = render(<FallbackBanner provider="open-meteo" />);
+    const { container } = render(<FallbackBanner provider="open-weather-map" />);
     expect(container).toBeEmptyDOMElement();
   });
 
   it("warns when a secondary provider served the response", () => {
-    render(<FallbackBanner provider="open-weather-map" />);
-    expect(screen.getByRole("status")).toHaveTextContent(/indisponível.*open-weather-map/i);
+    render(<FallbackBanner provider="open-meteo" />);
+    expect(screen.getByRole("status")).toHaveTextContent(/indisponível.*open-meteo/i);
   });
 });
