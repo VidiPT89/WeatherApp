@@ -3,7 +3,8 @@ import { AUTH_COOKIE_NAME, REFRESH_COOKIE_NAME } from "@/lib/constants";
 import { setAuthCookie } from "@/lib/auth-cookie";
 import { refreshTokens } from "@/lib/token-refresh";
 
-const PUBLIC_EXACT_PATHS = ["/"];
+// /privacy is linked from the App Store listing and the iOS app, so it must open without an account.
+const PUBLIC_EXACT_PATHS = ["/", "/privacy"];
 // Weather lookup (dashboard) and the three account-optional screens (favorites/history/settings
 // each render their own sign-in prompt client-side for a guest) all work without a token --
 // login/register are the only routes that must never see one.

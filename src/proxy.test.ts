@@ -50,6 +50,12 @@ describe("proxy middleware", () => {
     },
   );
 
+  it("lets the public privacy policy through without an auth cookie", async () => {
+    const response = await proxy(buildRequest("/privacy"));
+
+    expect(response.headers.get("location")).toBeNull();
+  });
+
   it("redirects to /login when there is no auth cookie on a protected path", async () => {
     const response = await proxy(buildRequest("/admin"));
 
