@@ -6,8 +6,8 @@ import type { Locale } from "@/i18n/locale";
  * returns. That same raw string is also keyword-matched by `backgroundGradientFor` (see
  * `@/lib/weather-condition`) to pick the weather card's background gradient, so the raw value must
  * keep flowing into that function unchanged. This table only translates the copy actually shown to
- * the user — it must stay byte-for-byte identical to the equivalent table on the iOS and Android
- * clients so all three apps show the same wording for the same backend phrase.
+ * the user — it must stay byte-for-byte identical to the equivalent table in the iOS client so
+ * both apps show the same wording for the same backend phrase.
  */
 const PT_TRANSLATIONS: Record<string, string> = {
   "clear sky": "Céu limpo",
