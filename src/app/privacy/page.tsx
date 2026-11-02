@@ -31,7 +31,7 @@ export default function PrivacyPage() {
 
       <Section title="Quem somos">
         <p>
-          A AmazingWeatherApp (iOS, Android e web) é desenvolvida por David Arsénio Martins (iVidi.dev). Para qualquer
+          A AmazingWeatherApp (iOS e web) é desenvolvida por David Arsénio Martins (iVidi.dev). Para qualquer
           questão sobre privacidade, escreve para <a className="text-accent underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
         </p>
       </Section>
