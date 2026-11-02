@@ -4,7 +4,7 @@
 
 **Live demo:** [weather-app-psi-inky-53.vercel.app](https://weather-app-psi-inky-53.vercel.app)
 
-This is one of three clients (Web / [iOS](https://github.com/VidiPT89/WeatherApp-iOS) / [Android](https://github.com/VidiPT89/WeatherApp-Android)) built on top of the same backend, to prove the API serves multiple platforms through one contract. It never talks to Open-Meteo/OpenWeatherMap directly — every request goes through the Weather API.
+This is one of two clients (Web / [iOS](https://github.com/VidiPT89/WeatherApp-iOS)) built on top of the same backend, to prove the API serves multiple platforms through one contract. It never talks to Open-Meteo/OpenWeatherMap directly — every request goes through the Weather API.
 
 ## 📦 What's Inside
 
